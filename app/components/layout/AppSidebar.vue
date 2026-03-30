@@ -14,6 +14,11 @@ const auth = useAuthStore()
             <NuxtLink to="/dashboard">Dashboard</NuxtLink>
             <NuxtLink to="/profile">Profile</NuxtLink>
             <NuxtLink to="/documents">Documents</NuxtLink>
+            
+            <NuxtLink v-if="auth.user?.role === 'admin'" to='/admin/users'>
+                Users
+            </NuxtLink>
+            
             <NuxtLink to="/leave">Leave</NuxtLink>
         </nav>
     </aside>

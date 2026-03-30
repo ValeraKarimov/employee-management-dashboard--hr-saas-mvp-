@@ -21,6 +21,7 @@ import { useAuthStore } from '~/stores/auth';
 
     const loginAs = (role) => {
         auth.login({ 
+            id: 1,
             name: 'Test User',
             role
         })

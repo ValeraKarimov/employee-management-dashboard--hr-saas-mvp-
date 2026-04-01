@@ -19,7 +19,9 @@ const auth = useAuthStore()
                 Users
             </NuxtLink>
             
-            <NuxtLink v-if="auth.user?.role === 'admin'" to="/admin/leave">Leave Requests</NuxtLink>
+            <NuxtLink v-if="auth.user?.role === 'admin'" to="/admin/leave">
+                Leave Requests
+            </NuxtLink>
 
             <NuxtLink v-if="auth.user?.role === 'employee'" to="/leave">
                 My Leave

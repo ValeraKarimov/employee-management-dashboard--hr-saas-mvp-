@@ -18,11 +18,12 @@ definePageMeta({
 <template>
     <div>
         
-        <div>
+        <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold mb-4">My Leave</h1>
             
             <NuxtLink to="/leave/create">
-                <button>Create Leave</button>
+                
+                <button class="px-4 py-2 bg-black text-white rounded">Create Leave</button>
             </NuxtLink>
             
         </div>

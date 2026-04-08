@@ -1,3 +1,14 @@
+<script setup>
+            
+import { useAuthStore } from '~/stores/auth';
+            
+    const auth = useAuthStore()
+            
+    const logout = () => {
+        auth.logout()
+        navigateTo('/login')
+    }
+</script>
 <template>
     <header class="h-16 bg-white border-b flex item-center justify-between px-6">
         <div class="p-5">
@@ -12,15 +23,3 @@
         </div>
     </header>
 </template>
-
-<script setup>
-
-import { useAuthStore } from '~/stores/auth';
-
-    const auth = useAuthStore()
-
-    const logout = () => {
-        auth.logout()
-        navigateTo('/login')
-    }
-</script>

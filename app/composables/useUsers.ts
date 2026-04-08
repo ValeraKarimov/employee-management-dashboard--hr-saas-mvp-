@@ -1,4 +1,4 @@
-import { ref, computed } from "vue"
+import { ref } from "vue"
 import type { User } from '~/types/user'
 
 
@@ -34,7 +34,7 @@ const users = ref<User[]>([
 
 
 export const useUsers = () => {
-    const allUsers = computed(() => users.value)
+    const allUsers = users
 
     const getUserById = (id: number) => {
         return users.value.find(user => user.id === id) || null

@@ -1,46 +1,78 @@
 import { ref } from "vue";
+import type { LeaveRequests, LeaveStatus } from "~/types/leaves";
 
-const leaveRequests = ref([
+const leaveRequests = ref<LeaveRequests[]>([
     {
         id: 1,
         userId: 1,
-        name: 'John One',
-        start: '2026-04-01',
-        end: '2026-04-05',
-        status: 'pending'
+        userName: 'John One',
+        startDate: '2026-04-01',
+        endDate: '2026-04-05',
+        reason: '',
+        status: 'rejected'
     },
     {
         id: 2,
         userId: 2,
-        name: 'Jane Two',
-        start: '2026-04-10',
-        end: '2026-04-12',
+        userName: 'Jane Two',
+        startDate: '2026-04-10',
+        endDate: '2026-04-12',
+        reason: '',
         status: 'approved'
     },
     {
         id: 3,
         userId: 3,
-        name: 'Mike Three',
-        start: '2026-04-01',
-        end: '2025-04-05',
+        userName: 'Mike Three',
+        startDate: '2026-05-01',
+        endDate: '2025-05-05',
+        reason: '',
+        status: 'pending'
+    },
+    {
+        id: 4,
+        userId: 1,
+        userName: 'John One',
+        startDate: '2026-06-24',
+        endDate: '2026-07-06',
+        reason: '',
         status: 'pending'
     }
 ])
 
 export const useLeave = () => {
-    const approve = (id: number) => {
-        const item = leaveRequests.value.find(l => l.id === id)
-        if (item) item.status = 'approved'
+    const allLeaveRequests = computed(() => leaveRequests.value)
+
+    const getMyLeaveRequests = (userId: number) => {
+        return computed(() => {
+            leaveRequests.value.filter(u => u.userId === userId)
+        })
     }
 
-    const reject = (id: number) => {
-        const item = leaveRequests.value.find(l => l.id === id)
-        if (item) item.status = 'rejected'
+    const createLeaveRequest = (payload: Omit<LeaveRequests, 'id' | 'status'>) => {
+        leaveRequests.value.push({
+            id: Date.now(),
+            ...payload,
+            status: 'pending'
+        })
+    }
+
+    const updateLeaveStatus = (id: number, status: LeaveStatus) => {
+
+        const request = leaveRequests.value.find(i => i.id === id)
+
+        if (!request) return null
+        if (request.status !== 'pending') return null
+
+        request.status = status
+        return request
+
     }
 
     return {
-        leaveRequests,
-        approve,
-        reject
+        leaveRequests: allLeaveRequests,
+        getMyLeaveRequests,
+        createLeaveRequest,
+        updateLeaveStatus
     }
 }

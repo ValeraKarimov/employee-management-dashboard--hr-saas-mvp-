@@ -1,40 +1,157 @@
-<script setup>
-import { useLeave } from '~/composables/useLeave';
+<script setup lang="ts">
+import { reactive } from 'vue';
+import { navigateTo } from '#app';
 import { useAuthStore } from '~/stores/auth';
-
-const { leaveRequests } = useLeave()
-const auth = useAuthStore()
-
-const start = ref('')
-const end = ref('')
-
-const create = () => {
-    leaveRequests.value.push({
-        id: Date.now(),
-        userId: auth.user.id,
-        name: auth.user.name,
-        start: start.value,
-        end: end.value,
-        status: 'pending'
-    })
-
-    navigateTo('/leave')
-}
+import { useLeave } from '~/composables/useLeave';
 
 definePageMeta({
     middleware: ['auth', 'role'],
     role: 'employee'
 })
+
+const auth = useAuthStore()
+const { createLeaveRequest } = useLeave()
+
+const form = reactive({
+    startDate: '',
+    endDate: '',
+    reason: ''
+})
+
+const errors = reactive({
+    startDate: '',
+    endDate: '',
+    reason: ''
+})
+
+const validateForm = () => {
+    errors.startDate = ''
+    errors.endDate = ''
+    errors.reason = ''
+
+    let isValid = true
+
+    if (!form.startDate) {
+        errors.startDate = 'Start date is required'
+        isValid = false
+    }
+
+    if (!form.endDate) {
+        errors.endDate = 'End date is required'
+        isValid = false
+    }
+
+    if (!form.reason) {
+        errors.reason = 'Reason is required'
+        isValid = false
+    }
+
+    if (form.startDate && form.endDate && form.endDate < form.startDate) {
+        errors.endDate = 'End date cannot be earlier than start date'
+        isValid = false
+    }
+
+    return isValid
+}
+
+const handleSubmit = () => {
+    if (!validateForm()) return;
+    if (!auth.user) return;
+
+    createLeaveRequest({
+        userId: auth.user.id,
+        userName: auth.user.name,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        reason: form.reason.trim()
+    })
+
+    navigateTo('/leave')
+}
+
+const handleCancel = () => {
+    navigateTo('/leave')
+}
+
 </script>
 
-
 <template>
-    <div>
-        <h1>Create Leave</h1>
+    <div class="max-w-2xl space-y-6">
+        
+        <div>
+            <h1 class="text-2xl font-bold">Create Leave Request</h1>
+            <p class="text-sm text-gray-500">
+                Submit a newleave request
+            </p>
+        </div>
 
-        <input v-model="start" type="date" />
-        <input v-model="end" type="date" />
+        <form class="space-y-4 rounded-xl border bg-white p-6 shadow-sm" @submit.prevent="handleSubmit">
+         
+            <div>
+                <label class="mb-1 block text-sm font-medium">Start Date</label>
+                <input 
+                    v-model="form.startDate"
+                    type="date" 
+                    class="w-full rounded-lg border px-3 py-2 outline-none"
+                />
+                <p
+                    v-if="errors.startDate"
+                    class="mt-1 text-sm text-red-600"
+                >
+                    {{ errors.startDate }}
+                </p>
+            </div>
 
-        <button @click="create">Submit</button>
+            <div>
+                <label class="mb-1 block text-sm font-medium">End Date</label>
+                <input 
+                    v-model="form.endDate"
+                    type="date" 
+                    class="w-full rounded-lg border px-3 py-2 outline-none"
+                />
+                <p
+                    v-if="errors.endDate"
+                    class="mt-1 text-sm text-red-600"
+                >
+                    {{ errors.endDate }}
+                </p>
+            </div>
+
+            <div>
+                <label class="mb-1 block text-sm font-medium">Reason</label>
+                <textarea 
+                    v-model="form.reason"
+                    rows="4" 
+                    class="w-full rounded-lg border px-3 py-2 outline-none"
+                    placeholder="Why do you need leave ?"
+                />
+                <p
+                    v-if="errors.reason"
+                    class="mt-1 text-sm text-red-600"
+                >
+                    {{ errors.reason }}
+                </p>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button 
+                    type="submit"
+                    class="rounded-lg bg-black px-4 py-2 text-white"
+                >
+                    Submit request
+                </button>
+
+                <button 
+                    type="button"
+                    class="rounded-lg border px-4 py-2"
+                    @click="handleCancel"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 </template>

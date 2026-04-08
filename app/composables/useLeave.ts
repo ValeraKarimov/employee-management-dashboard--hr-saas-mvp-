@@ -8,7 +8,7 @@ const leaveRequests = ref<LeaveRequests[]>([
         userName: 'John One',
         startDate: '2026-04-01',
         endDate: '2026-04-05',
-        reason: '',
+        reason: 'Family Trip',
         status: 'rejected'
     },
     {
@@ -17,7 +17,7 @@ const leaveRequests = ref<LeaveRequests[]>([
         userName: 'Jane Two',
         startDate: '2026-04-10',
         endDate: '2026-04-12',
-        reason: '',
+        reason: 'Medical Appointment',
         status: 'approved'
     },
     {
@@ -26,7 +26,7 @@ const leaveRequests = ref<LeaveRequests[]>([
         userName: 'Mike Three',
         startDate: '2026-05-01',
         endDate: '2025-05-05',
-        reason: '',
+        reason: 'Personal',
         status: 'pending'
     },
     {
@@ -43,18 +43,34 @@ const leaveRequests = ref<LeaveRequests[]>([
 export const useLeave = () => {
     const allLeaveRequests = computed(() => leaveRequests.value)
 
+    // const getMyLeaveRequests = (userId: number) => {
+    //     return computed(() => {
+    //         leaveRequests.value.filter(u => u.userId === userId)
+    //     })
+    // }
+
     const getMyLeaveRequests = (userId: number) => {
-        return computed(() => {
-            leaveRequests.value.filter(u => u.userId === userId)
-        })
+        return leaveRequests.value.filter((request) => request.userId === userId)
     }
 
+
+    // const createLeaveRequest = (payload: Omit<LeaveRequests, 'id' | 'status'>) => {
+    //     leaveRequests.value.push({
+    //         id: Date.now(),
+    //         ...payload,
+    //         status: 'pending'
+    //     })
+    // }
+
     const createLeaveRequest = (payload: Omit<LeaveRequests, 'id' | 'status'>) => {
-        leaveRequests.value.push({
+        const newRequest: LeaveRequests = {
             id: Date.now(),
             ...payload,
             status: 'pending'
-        })
+        }
+
+        leaveRequests.value.push(newRequest)
+        return newRequest
     }
 
     const updateLeaveStatus = (id: number, status: LeaveStatus) => {

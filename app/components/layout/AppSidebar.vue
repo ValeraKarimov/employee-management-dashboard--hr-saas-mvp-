@@ -23,7 +23,7 @@ const auth = useAuthStore()
                 Leave Requests
             </NuxtLink>
 
-            <NuxtLink v-if="auth.user?.role === 'employee'" to="/leave">
+            <NuxtLink v-if="auth.user?.role === 'employee'" to="/leave/">
                 My Leave
             </NuxtLink>
 

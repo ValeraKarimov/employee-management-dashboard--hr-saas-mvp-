@@ -11,14 +11,15 @@ interface NavItem {
     label: string
     to: string
     roles: UserRole[]
+    exact?: boolean
 }
 
 const navigation: NavItem[] = [
-    { label: 'Dashboard', to: '/dashboard', roles: ['admin', 'employee'] },
+    { label: 'Dashboard', to: '/dashboard', roles: ['admin', 'employee'], exact: true },
     { label: 'Users', to: '/admin/users', roles: ['admin'] },
-    { label: 'Leave Requests', to: '/admin/leave', roles: ['admin'] },
-    { label: 'My Leave', to: '/leave', roles: ['employee'] },
-    { label: 'Create New Request', to: '/leave/create', roles: ['employee'] }
+    { label: 'Leave Requests', to: '/admin/leave', roles: ['admin'], exact: true },
+    { label: 'My Leave', to: '/leave', roles: ['employee'], exact: true },
+    { label: 'Create New Request', to: '/leave/create', roles: ['employee'], exact: true }
 ]
 
 const currentRole = computed(() => auth.user?.role)
@@ -29,12 +30,28 @@ const filteredNavigation = computed(() => {
     return navigation.filter(i => i.roles.includes(currentRole.value as UserRole))
 })
 
-const isActiveRoute = (path: string) => {
-    if (path === '/dashboard') {
-        return route.path === '/dashboard'
+// const isActiveRoute = (path: string) => {
+//     if (path === '/dashboard') {
+//         return route.path === '/dashboard'
+//     }
+
+//     if (path === '/leave') {
+//         return route.path === '/leave'
+//     }
+
+//     if (path === '/leave/create') {
+//         return route.path === '/leave/create'
+//     }
+
+//     return route.path.startsWith(path)
+// }
+
+const isActiveRoute = (item: NavItem) => {
+    if (item.exact) {
+        return route.path === item.to
     }
 
-    return route.path.startsWith(path)
+    return route.path.startsWith(item.to)
 }
 
 </script>
@@ -84,7 +101,7 @@ const isActiveRoute = (path: string) => {
                 :key="item.to"
                 :to="item.to"
                 class="block rounded-lg px-4 py-2 text-sm font-medium transition"
-                :class="isActiveRoute(item.to) 
+                :class="isActiveRoute(item) 
                     ? 'bg-black text-white' 
                     : 'text-gray-700 hover:bg-gray-100'"
             >

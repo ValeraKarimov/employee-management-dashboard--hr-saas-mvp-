@@ -1,11 +1,47 @@
-<script setup>
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from '#app';
 import { useAuthStore } from '~/stores/auth';
+import type { UserRole } from '~/types/user';
 
+const route = useRoute()
 const auth = useAuthStore()
+
+interface NavItem {
+    label: string
+    to: string
+    roles: UserRole[]
+}
+
+const navigation: NavItem[] = [
+    { label: 'Dashboard', to: '/dashboard', roles: ['admin', 'employee'] },
+    { label: 'Users', to: '/admin/users', roles: ['admin'] },
+    { label: 'Leave Requests', to: '/admin/leave', roles: ['admin'] },
+    { label: 'My Leave', to: '/leave', roles: ['employee'] },
+    { label: 'Create New Request', to: '/leave/create', roles: ['employee'] }
+]
+
+const currentRole = computed(() => auth.user?.role)
+
+const filteredNavigation = computed(() => {
+    if(!currentRole) return []
+
+    return navigation.filter(i => i.roles.includes(currentRole.value as UserRole))
+})
+
+const isActiveRoute = (path: string) => {
+    if (path === '/dashboard') {
+        return route.path === '/dashboard'
+    }
+
+    return route.path.startsWith(path)
+}
+
 </script>
 
 <template>
-    <aside class="w-64 bg-white border-r">
+
+    <!-- <aside class="w-64 bg-white border-r">
         <div class="p-4 font-bold text-lg">
             HRM
         </div>
@@ -32,5 +68,31 @@ const auth = useAuthStore()
             </NuxtLink>
 
         </nav>
+    </aside> -->
+
+    <aside class="flex h-full w-64 flex-col border-r bg--white">
+        <div class="border-b px-6 py-4">
+            <h2 class="text-lg font-bold">HRM System</h2>
+            <p class="text-sm text-gray-500">
+                {{ currentRole || 'Guest' }}
+            </p>
+        </div>
+
+        <nav class="flex-1 space-y-2 p-4">
+            <NuxtLink
+                v-for="item in filteredNavigation"
+                :key="item.to"
+                :to="item.to"
+                class="block rounded-lg px-4 py-2 text-sm font-medium transition"
+                :class="isActiveRoute(item.to) 
+                    ? 'bg-black text-white' 
+                    : 'text-gray-700 hover:bg-gray-100'"
+            >
+                {{ item.label }}
+            </NuxtLink>
+        </nav>
+
     </aside>
+
+
 </template>

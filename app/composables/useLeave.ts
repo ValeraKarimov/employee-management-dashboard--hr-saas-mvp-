@@ -35,7 +35,7 @@ const leaveRequests = ref<LeaveRequests[]>([
         userName: 'John One',
         startDate: '2026-06-24',
         endDate: '2026-07-06',
-        reason: '',
+        reason: 'Special Weekend',
         status: 'pending'
     }
 ])

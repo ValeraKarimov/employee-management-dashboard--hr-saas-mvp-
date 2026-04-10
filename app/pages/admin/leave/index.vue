@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { useLeave } from '~/composables/useLeave';
 import type { LeaveStatus, LeaveRequests } from '~/types/leaves';
+import { ui } from '~/constants/ui';
 
 definePageMeta({
     middleware: ['auth', 'role'],
@@ -31,14 +32,14 @@ const handleReject = (request: LeaveRequests) => {
 
 const getStatusClasses = (status: LeaveStatus) => {
     if (status === 'approved') {
-        return 'bg-green-100 text-green-700'
+        return ui.badge.leaveApproved
     }
 
     if (status === 'rejected') {
-        return 'bg-red-100 text-red-700'
+        return ui.badge.leaveRejected
     }
 
-    return 'bg-yellow-100 text-red-700'
+    return ui.badge.leavePending
 }
 
 </script>
@@ -61,7 +62,7 @@ const getStatusClasses = (status: LeaveStatus) => {
 
                 <select 
                     v-model="statusFilter"
-                    class="rounded-lg border px-3 py-2 text-sm outline-none"
+                    :class="ui.input.base"
                 >
                     <option value="all">All</option>
                     <option value="pending">Pending</option>
@@ -73,24 +74,24 @@ const getStatusClasses = (status: LeaveStatus) => {
 
         <div 
             v-if="filteredRequests.length === 0"
-            class="rounded-xl border bg-white p-10 text-center shadow-sm"
+            :class="ui.emptyState.base"
         >
-            <h2 class="text-lg font-semibold">No leave requests found</h2>
-            <p class="mt-2 text-sm text-gray-500">
+            <h2 :class="ui.emptyState.title">No leave requests found</h2>
+            <p :class="ui.emptyState.text">
                 There are no requests for selected status.
             </p>
         </div>
 
-        <div v-else class="overflow-hidden rounded-xl border bg-white shadow-sm">
-            <table class="min-w-full text-sm">
-                <thead class="bg-gray-50 text-left">
+        <div v-else :class="ui.table.wrapper">
+            <table :class="ui.table.table">
+                <thead :class="ui.table.thead">
                     <tr>
-                        <th class="px-4 py-3">Employee</th>
-                        <th class="px-4 py-3">Start Date</th>
-                        <th class="px-4 py-3">End Date</th>
-                        <th class="px-4 py-3">Reason</th>
-                        <th class="px-4 py-3">Status</th>
-                        <th class="px-4 py-3">Actions</th>
+                        <th :class="ui.table.th">Employee</th>
+                        <th :class="ui.table.th">Start Date</th>
+                        <th :class="ui.table.th">End Date</th>
+                        <th :class="ui.table.th">Reason</th>
+                        <th :class="ui.table.th">Status</th>
+                        <th :class="ui.table.th">Actions</th>
                     </tr>
                 </thead>
 
@@ -100,19 +101,18 @@ const getStatusClasses = (status: LeaveStatus) => {
                         :key="request.id"
                         class="border-t"
                     >
-                    <td class="px-4 py-3">{{ request.userName }}</td>
-                    <td class="px-4 py-3">{{ request.startDate }}</td>
-                    <td class="px-4 py-3">{{ request.endDate }}</td>
-                    <td class="px-4 py-3">{{ request.reason }}</td>
-                    <td class="px-4 py-3">
+                    <td :class="ui.table.td">{{ request.userName }}</td>
+                    <td :class="ui.table.td">{{ request.startDate }}</td>
+                    <td :class="ui.table.td">{{ request.endDate }}</td>
+                    <td :class="ui.table.td">{{ request.reason }}</td>
+                    <td :class="ui.table.td">
                         <span 
-                            class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"
-                            :class="getStatusClasses(request.status)"
+                            :class="[ui.badge.base, getStatusClasses(request.status)]"
                         >
                             {{ request.status }}
                         </span>
                     </td>
-                    <td class="px-4 py-3">
+                    <td :class="ui.table.td">
                         <div class="flex gap-2">
                             <button 
                                 class="rounded-md border px-3 py-1 text-green-700 disabled:cursor-not-allowed disabled:opacity-50"

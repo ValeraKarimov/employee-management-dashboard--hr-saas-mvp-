@@ -3,6 +3,7 @@ import { reactive } from 'vue';
 import { navigateTo } from '#app';
 import { useAuthStore } from '~/stores/auth';
 import { useLeave } from '~/composables/useLeave';
+import { ui } from '~/constants/ui';
 
 definePageMeta({
     middleware: ['auth', 'role'],
@@ -91,8 +92,8 @@ const handleCancel = () => {
                 <label class="mb-1 block text-sm font-medium">Start Date</label>
                 <input 
                     v-model="form.startDate"
-                    type="date" 
-                    class="w-full rounded-lg border px-3 py-2 outline-none"
+                    type="date"
+                    :class="ui.input.base"
                 />
                 <p
                     v-if="errors.startDate"
@@ -106,8 +107,8 @@ const handleCancel = () => {
                 <label class="mb-1 block text-sm font-medium">End Date</label>
                 <input 
                     v-model="form.endDate"
-                    type="date" 
-                    class="w-full rounded-lg border px-3 py-2 outline-none"
+                    type="date"
+                    :class="ui.input.base"
                 />
                 <p
                     v-if="errors.endDate"
@@ -121,8 +122,8 @@ const handleCancel = () => {
                 <label class="mb-1 block text-sm font-medium">Reason</label>
                 <textarea 
                     v-model="form.reason"
-                    rows="4" 
-                    class="w-full rounded-lg border px-3 py-2 outline-none"
+                    rows="4"
+                    :class="ui.input.base"
                     placeholder="Why do you need leave ?"
                 />
                 <p

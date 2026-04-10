@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useUsers } from '~/composables/useUsers';
 import { useLeave } from '~/composables/useLeave';
+import { ui } from '~/constants/ui';
 
 definePageMeta({
         layout: 'default',
@@ -50,7 +51,7 @@ const myApprovedLeaveRequests = computed(() => {
 <template>
   <div class="space-y-8">
     <section class="space-y-2">
-      <h2 class="text-lg font-semibold">Overview</h2>
+      <h2 :class="ui.emptyState.title">Overview</h2>
       <p class="text-sm text-gray-500">
         A quick summary of your HR workspace.
       </p>
@@ -58,22 +59,22 @@ const myApprovedLeaveRequests = computed(() => {
 
     <template v-if="isAdmin">
       <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div class="rounded-xl border bg-white p-5 shadow-sm">
+        <div :class="ui.card.stat">
           <p class="text-sm text-gray-500">Total users</p>
           <p class="mt-2 text-3xl font-bold">{{ totalUsers }}</p>
         </div>
 
-        <div class="rounded-xl border bg-white p-5 shadow-sm">
+        <div :class="ui.card.stat">
           <p class="text-sm text-gray-500">Admins</p>
           <p class="mt-2 text-3xl font-bold">{{ totalAdmins }}</p>
         </div>
 
-        <div class="rounded-xl border bg-white p-5 shadow-sm">
+        <div :class="ui.card.stat">
           <p class="text-sm text-gray-500">Employees</p>
           <p class="mt-2 text-3xl font-bold">{{ totalEmployees }}</p>
         </div>
 
-        <div class="rounded-xl border bg-white p-5 shadow-sm">
+        <div :class="ui.card.stat">
           <p class="text-sm text-gray-500">Pending leave requests</p>
           <p class="mt-2 text-3xl font-bold">{{ pendingLeaveRequests }}</p>
         </div>
@@ -81,39 +82,39 @@ const myApprovedLeaveRequests = computed(() => {
 
       <section class="space-y-4">
         <div>
-          <h2 class="text-lg font-semibold">Quick Actions</h2>
+          <h2 :class="ui.emptyState.title">Quick Actions</h2>
           <p class="text-sm text-gray-500">
             Jump directly to the main admin workflows.
           </p>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
-          <div class="rounded-xl border bg-white p-6 shadow-sm">
+          <div :class="ui.card.section">
             <h3 class="text-base font-semibold">Users management</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <p :class="ui.emptyState.text">
               Create, edit and manage employee and admin accounts.
             </p>
 
             <div class="mt-4">
               <NuxtLink
                 to="/admin/users"
-                class="inline-flex rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+                :class="ui.button.primary"
               >
                 Manage users
               </NuxtLink>
             </div>
           </div>
 
-          <div class="rounded-xl border bg-white p-6 shadow-sm">
+          <div :class="ui.card.section">
             <h3 class="text-base font-semibold">Leave requests</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <p :class="ui.emptyState.text">
               Review and update employee leave request statuses.
             </p>
 
             <div class="mt-4">
               <NuxtLink
                 to="/admin/leave"
-                class="inline-flex rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+                :class="ui.button.primary"
               >
                 Review leave requests
               </NuxtLink>
@@ -125,17 +126,17 @@ const myApprovedLeaveRequests = computed(() => {
 
     <template v-else-if="isEmployee">
       <section class="grid gap-4 md:grid-cols-3">
-        <div class="rounded-xl border bg-white p-5 shadow-sm">
+        <div :class="ui.card.stat">
           <p class="text-sm text-gray-500">My leave requests</p>
           <p class="mt-2 text-3xl font-bold">{{ myLeaveRequests.length }}</p>
         </div>
 
-        <div class="rounded-xl border bg-white p-5 shadow-sm">
+        <div :class="ui.card.stat">
           <p class="text-sm text-gray-500">Pending requests</p>
           <p class="mt-2 text-3xl font-bold">{{ myPendingLeaveRequests }}</p>
         </div>
 
-        <div class="rounded-xl border bg-white p-5 shadow-sm">
+        <div :class="ui.card.stat">
           <p class="text-sm text-gray-500">Approved requests</p>
           <p class="mt-2 text-3xl font-bold">{{ myApprovedLeaveRequests }}</p>
         </div>
@@ -150,32 +151,32 @@ const myApprovedLeaveRequests = computed(() => {
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
-          <div class="rounded-xl border bg-white p-6 shadow-sm">
+          <div :class="ui.card.section">
             <h3 class="text-base font-semibold">My leave requests</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <p :class="ui.emptyState.text">
               View all your leave requests and check their statuses.
             </p>
 
             <div class="mt-4">
               <NuxtLink
                 to="/leave"
-                class="inline-flex rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+                :class="ui.button.primary"
               >
                 View my leave
               </NuxtLink>
             </div>
           </div>
 
-          <div class="rounded-xl border bg-white p-6 shadow-sm">
+          <div :class="ui.card.section">
             <h3 class="text-base font-semibold">Create leave request</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <p :class="ui.emptyState.text">
               Submit a new leave request for approval.
             </p>
 
             <div class="mt-4">
               <NuxtLink
                 to="/leave/create"
-                class="inline-flex rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+                :class="ui.button.primary"
               >
                 Create request
               </NuxtLink>

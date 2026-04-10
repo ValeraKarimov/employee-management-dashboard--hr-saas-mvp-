@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useRoute, navigateTo } from '#app';
 import { useAuthStore } from '~/stores/auth';
+import { ui } from '~/constants/ui';
             
 const route = useRoute()
 const auth = useAuthStore()
@@ -43,8 +44,8 @@ const pageSubtitle = computed(() => {
 
 const roleClasses = computed(() => {
     return currentUser.value?.role === 'admin'
-        ? 'bg-purple-100 text-purple-700'
-        : 'bg-blue-100 text-blue-700'
+        ? ui.badge.roleAdmin
+        : ui.badge.roleEmployee
 })
 
 // const logout = () => {
@@ -81,14 +82,10 @@ const handleLogout = async() => {
                 <p class="text-sm font-medium text-gray-500">
                     {{ currentUser?.name || 'Guest' }}
                 </p>
-                <p class="text-xs text-gray-500">
-                   email
-                </p>
             </div>
 
             <span 
-                class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"
-                :class="roleClasses"
+                :class="[ui.badge.base, roleClasses]"
             >
                 {{ currentUser?.role || 'guest' }}
             </span>

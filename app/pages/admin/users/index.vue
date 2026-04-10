@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { useUsers } from '~/composables/useUsers';
 import type { User } from '~/types/user';
+import { ui } from '~/constants/ui';
 
 definePageMeta({
   middleware: ['auth', 'role'],
@@ -37,14 +38,14 @@ const handleDelete = (user: User) => {
 
 const getRoleClasses = (role: User['role']) => {
   return role === 'admin'
-  ? 'bg-purple-100 text-purple-700'
-  : 'bg-blue-100 text-blue-700'
+  ? ui.badge.roleAdmin
+  : ui.badge.roleEmployee
 }
 
 const getStatusClasses = (status: User['status']) => {
   return status === 'active'
-    ? 'bg-green-100 text-green-700'
-    : 'bg-gray-100 text-gray-700'
+    ? ui.badge.statusActive
+    : ui.badge.statusInactive
 }
 
 </script>
@@ -60,7 +61,7 @@ const getStatusClasses = (status: User['status']) => {
 
     <NuxtLink
       to="/admin/users/create"
-      class="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+      :class="ui.button.primary"
     >
       Create user
     </NuxtLink>
@@ -71,36 +72,38 @@ const getStatusClasses = (status: User['status']) => {
       v-model="search"
       type="text" 
       placeholder="Search by name, email, role, department..."
-      class="w-full rounded-lg border px-3 py-2 outline-none">
+      :class="ui.input.base"
+      >
   </div>
 
   <div
     v-if="filteredUsers.length === 0" 
-    class="rounded-xl border bg-white p-10 text-center shadow-sm">
-    <h2 class="text-lg font-semibold">No users found</h2>
-    <p class="mt-2 text-sm text-gray-500">
+    :class="ui.emptyState.base"
+    >
+    <h2 :class="ui.emptyState.title">No users found</h2>
+    <p :class="ui.emptyState.text">
       Try another search or create a new user.
     </p>
 
     <NuxtLink
       to="/admin/users/create"
-      class="mt-4 inline-block rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+      :class="ui.button.primary"
     >
       Create user
     </NuxtLink>
 
   </div>
 
-  <div v-else class="overflow-hidden rounded-xl border bg-white shadow-sm">
-    <table class="min-w-full text-sm">
-      <thead class="bg-gray-50 text-left">
+  <div v-else :class="ui.table.wrapper">
+    <table :class="ui.table.table">
+      <thead :class="ui.table.thead">
         <tr>
-          <th class="px-4 py-3">Name</th>
-          <th class="px-4 py-3">Email</th>
-          <th class="px-4 py-3">Role</th>
-          <th class="px-4 py-3">Status</th>
-          <th class="px-4 py-3">Department</th>
-          <th class="px-4 py-3">Actions</th>
+          <th :class="ui.table.th">Name</th>
+          <th :class="ui.table.th">Email</th>
+          <th :class="ui.table.th">Role</th>
+          <th :class="ui.table.th">Status</th>
+          <th :class="ui.table.th">Department</th>
+          <th :class="ui.table.th">Actions</th>
         </tr>
       </thead>
 
@@ -108,38 +111,36 @@ const getStatusClasses = (status: User['status']) => {
         <tr 
           v-for="user in filteredUsers"
           :key="user.id"
-          class="border-t"
+          :class="ui.table.row"
         >
-        <td class="px-4 py-3 font-medium">{{ user.name }}</td>
-        <td class="px-4 py-3">{{ user.email }}</td>
-        <td class="px-4 py-3">
+        <td class="font-medium" :class="ui.table.td">{{ user.name }}</td>
+        <td :class="ui.table.td">{{ user.email }}</td>
+        <td :class="ui.table.td">
           <span 
-            class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"
-            :class="getRoleClasses(user.role)"
+            :class="[ui.badge.base, getRoleClasses(user.role)]"
           >
           {{ user.role }}
           </span>
         </td>
-        <td class="px-4 py-3">
+        <td :class="ui.table.td">
           <span 
-            class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"
-            :class="getStatusClasses(user.status)"
+            :class="[ui.badge.base, getStatusClasses(user.status)]"
           >
           {{ user.status }}
           </span>
         </td>
-        <td class="px-4 py-3">{{ user.department || '-' }}</td>
-        <td class="px-4 py-3">
+        <td :class="ui.table.td">{{ user.department || '-' }}</td>
+        <td :class="ui.table.td">
           <div class="flex gap-2">
             <NuxtLink
               :to="`/admin/users/${user.id}`"
-              class="rounded-md border px-3 py-1"
+              :class="ui.button.secondary"
             >
             Edit
           </NuxtLink>
 
           <button 
-            class="rounded-md border px-3 py-1 text-red-600"
+            :class="ui.button.danger"
             @click="handleDelete(user)"
           >Delete</button>
 

@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useLeave } from '~/composables/useLeave';
 import type { LeaveStatus } from '~/types/leaves';
+import { ui } from '~/constants/ui';
 
 definePageMeta({
     middleware: ['auth', 'role'],
@@ -22,14 +23,14 @@ const myLeaveRequests = computed(() => {
 
 const getStatusClasses = (status: LeaveStatus) => {
     if (status === 'approved') {
-        return 'bg-green-100 text-green-700'
+        return ui.badge.leaveApproved
     }
 
     if (status === 'rejected') {
-        return 'bg-red-100 text-red-700'
+        return ui.badge.leaveRejected
     }
 
-    return 'bg-yellow-100 text-yellow-700'
+    return ui.badge.leavePending
 }
 
 </script>
@@ -46,7 +47,7 @@ const getStatusClasses = (status: LeaveStatus) => {
 
             <NuxtLink
                 to="/leave/create"
-                class="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+                :class="ui.button.primary"
             >
             Create Request
             </NuxtLink>
@@ -54,28 +55,28 @@ const getStatusClasses = (status: LeaveStatus) => {
 
         <div
             v-if="myLeaveRequests.length === 0" 
-            class="rounded-xl border bg-white p-10 text-center shadow-sm"
+            :class="ui.emptyState.base"
         >
         <h2 class="text-lg font-semibold">No leave requests yet</h2>
         <p class="mt-2 text-sm text-gray-500">You are not submitted any leave requests.</p>
 
         <NuxtLink
             to="/leave/create"
-            class="mt-4 inline-block rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+            :class="ui.button.primary"
         >
             Create your first request
         </NuxtLink>
 
         </div>
 
-        <div v-else class="overflow-hidden rounded-xl border bg-white shadow-sm">
-            <table class="min-w-full text-sm">
-                <thead class="bg-gray-50 text-left">
+        <div v-else :class="ui.table.wrapper">
+            <table :class="ui.table.table">
+                <thead :class="ui.table.thead">
                     <tr>
-                        <th class="px-4 py-3">Start Date</th>
-                        <th class="px-4 py-3">End Date</th>
-                        <th class="px-4 py-3">Reason</th>
-                        <th class="px-4 py-3">Status</th>
+                        <th :class="ui.table.th">Start Date</th>
+                        <th :class="ui.table.th">End Date</th>
+                        <th :class="ui.table.th">Reason</th>
+                        <th :class="ui.table.th">Status</th>
                     </tr>
                 </thead>
 
@@ -85,13 +86,12 @@ const getStatusClasses = (status: LeaveStatus) => {
                         :key="request.id"
                         class="border-t"
                     >
-                        <td class="px-4 py-3">{{ request.startDate }}</td>
-                        <td class="px-4 py-3">{{ request.endDate }}</td>
-                        <td class="px-4 py-3">{{ request.reason }}</td>
-                        <td class="px-4 py-3">
+                        <td :class="ui.table.td">{{ request.startDate }}</td>
+                        <td :class="ui.table.td">{{ request.endDate }}</td>
+                        <td :class="ui.table.td">{{ request.reason }}</td>
+                        <td :class="ui.table.td">
                             <span 
-                                class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"
-                                :class="getStatusClasses(request.status)"
+                                :class="[ui.badge.base, getStatusClasses(request.status)]"
                             >
                                 {{ request.status }}
                             </span>

@@ -2,6 +2,7 @@
 
 import { reactive, computed, watch } from 'vue';
 import type { User, UserRole } from '~/types/user';
+import { ui } from '~/constants/ui';
 
 type UserFormData = Omit<User, 'id'>
 
@@ -118,7 +119,7 @@ const handleSubmit = () => {
             <input
                 v-model="form.name"
                 type="text" 
-                class="w-full rounded-lg border px-3 py-2 outline-none" />
+                :class="ui.input.base" />
             <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
         </div>
 
@@ -128,7 +129,7 @@ const handleSubmit = () => {
             <input
                 v-model="form.email"
                 type="text" 
-                class="w-full rounded-lg border px-3 py-2 outline-none" />
+                :class="ui.input.base" />
 
             <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
 
@@ -138,7 +139,8 @@ const handleSubmit = () => {
             <label class="mb-1 block text-sm font-medium">Role</label>
             <select
                 v-model="form.role"
-                class="w-full rounded-lg border px-3 py-2 outline-none">
+                :class="ui.input.base"
+            >
                 <option value="employee">Employee</option>
                 <option value="admin">Admin</option>
             </select>
@@ -150,8 +152,9 @@ const handleSubmit = () => {
             
             <input
                 v-model="form.department"
-                type="text" 
-                class="w-full rounded-lg border px-3 py-2 outline-none">
+                type="text"
+                :class="ui.input.base"
+            >
         </div>
 
         <div>
@@ -159,15 +162,17 @@ const handleSubmit = () => {
             
             <input
                 v-model="form.position"
-                type="text" 
-                class="w-full rounded-lg border px-3 py-2 outline-none">
+                type="text"
+                :class="ui.input.base"    
+            >
         </div>
 
         <div>
             <label class="mb-1 block text-sm font-medium">Status</label>
             <select
                 v-model="form.status"
-                class="w-full rounded-lg border px-3 py-2 outline-none">
+                :class="ui.input.base"    
+            >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
             </select>

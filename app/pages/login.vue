@@ -8,9 +8,6 @@
         <button @click="loginAs('admin')">
             Login as Admin
         </button>
-        <!-- <button @click="login">
-            Login (Mock)
-        </button> -->
     </div>
 </template>
 
@@ -31,6 +28,5 @@ import { useAuthStore } from '~/stores/auth';
 
     definePageMeta({
         layout:'blank',
-        // middleware: 'auth'
     })
 </script>

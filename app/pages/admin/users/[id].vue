@@ -15,7 +15,6 @@ const { getUserById, updateUser } = useUsers()
 
 const userId = Number(route.params.id)
 
-// const user = computed(() => getUserById(userId))
 const user = ref<User | null>(null)
 
 onMounted(async () => {

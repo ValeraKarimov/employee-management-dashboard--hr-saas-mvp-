@@ -9,7 +9,7 @@ export const leaveRequests = <LeaveRequest[]>([
         startDate: '2026-04-01',
         endDate: '2026-04-05',
         reason: 'Family Trip',
-        status: 'rejected'
+        status: 'approved'
     },
     {
         id: 2,
@@ -17,7 +17,7 @@ export const leaveRequests = <LeaveRequest[]>([
         startDate: '2026-04-10',
         endDate: '2026-04-12',
         reason: 'Medical Appointment',
-        status: 'approved'
+        status: 'rejected'
     },
     {
         id: 3,

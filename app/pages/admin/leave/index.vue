@@ -15,15 +15,6 @@ const { leaveRequests, updateLeaveStatus } = useLeave()
 
 const statusFilter = ref<'all' | LeaveStatus>('all')
 
-// const filteredRequests = computed(() => {
-//     if (statusFilter.value === 'all') {
-//         return leaveRequests.value
-//     }
-
-//     return leaveRequests.value.filter(r => r.status === statusFilter.value)
-
-// })
-
 const handleApprove = (request: LeaveRequest) => {
     updateLeaveStatus(request.id, 'approved')
 }

@@ -22,11 +22,6 @@ onMounted(() => {
     }
 })
 
-// const myLeaveRequests = computed(() => {
-//     if (!currentUser.value) return []
-//     return loadMyLeaves(currentUser.value.id)
-// })
-
 const myLeaveRequests = computed(() => leaveRequests.value)
 
 const getStatusClasses = (status: LeaveStatus) => {

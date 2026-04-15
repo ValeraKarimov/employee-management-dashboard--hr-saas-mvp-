@@ -11,52 +11,51 @@ definePageMeta({
     })
 
 const auth = useAuthStore()
-const { users } = useUsers()
-const { leaveRequests, loadMyLeaves } = useLeave()
+const { users, loadUsers } = useUsers()
+const { leaveRequests, loadLeaves, loadMyLeaves } = useLeave()
 
 const currentUser = computed(() => auth.user)
 
-const isAdmin = computed(() => currentUser?.value.role === 'admin')
-const isEmployee = computed(() => currentUser?.value.role === 'employee')
+
+const isAdmin = computed(() => currentUser.value?.role === 'admin')
+const isEmployee = computed(() => currentUser.value?.role === 'employee')
 
 const totalUsers = computed(() => users.value.length)
 
 const totalAdmins = computed(() => {
-    return users.value.filter(u => u.role === 'admin').length
+  return users.value.filter(u => u.role === 'admin').length
 })
 
 const totalEmployees = computed(() => {
-    return users.value.filter(u => u.role === 'employee').length
+  return users.value.filter(u => u.role === 'employee').length
 })
 
 const pendingLeaveRequests = computed(() => {
-    return leaveRequests.value.filter(l => l.status === 'pending').length
+  return leaveRequests.value.filter(l => l.status === 'pending').length
 })
-
-// const myLeaveRequests = computed(() => {
-//     if(!currentUser.value) return[]
-//     return getMyLeaveRequests(currentUser?.value.id)
-// })
-
-
-// const myLeaveRequests = computed(() => {
-//   if(!currentUser.value) return[]
-//   return loadMyLeaves(currentUser?.value.id)
-// })
 
 const myLeaveRequests = computed(() => leaveRequests.value)
 
-onMounted(() => {
-  if(!currentUser.value) {loadMyLeaves(currentUser.value.id)}
-})
-
 
 const myPendingLeaveRequests = computed(() => {
-    return myLeaveRequests?.value.filter(r => r.status === 'pending').length
+  return myLeaveRequests.value.filter(r => r.status === 'pending').length
 })
 
 const myApprovedLeaveRequests = computed(() => {
-    return myLeaveRequests?.value.filter(r => r.status === 'approved').length
+  return myLeaveRequests.value.filter(r => r.status === 'approved').length
+})
+
+onMounted(async () => {
+  if(!currentUser.value) return
+  
+  await loadUsers()
+
+  if (currentUser.value.role === 'admin') {
+    await loadLeaves()
+  } else {
+    await loadMyLeaves(currentUser.value.id)
+  }
+
 })
 
 </script>

@@ -8,16 +8,6 @@ export const useLeave = () => {
 
     
     const allLeaveRequests = computed(() => leaveRequests.value)
-    
-    // const getMyLeaveRequests = (userId: number) => {
-    //     return computed(() => {
-        //         leaveRequests.value.filter(u => u.userId === userId)
-        //     })
-        // }
-        
-    // const getMyLeaveRequests = (userId: number) => {
-    //     return leaveRequests.value.filter((request) => request.userId === userId)
-    // }
             
     const loadLeaves = async () => {
         leaveRequests.value = await leaveService.getAll()
@@ -32,42 +22,11 @@ export const useLeave = () => {
     }
 
 
-
-    // const createLeaveRequest = (payload: Omit<LeaveRequests, 'id' | 'status'>) => {
-    //     leaveRequests.value.push({
-    //         id: Date.now(),
-    //         ...payload,
-    //         status: 'pending'
-    //     })
-    // }
-
-    // const createLeaveRequest = (payload: Omit<LeaveRequest, 'id' | 'status'>) => {
-    //     const newRequest: LeaveRequest = {
-    //         id: Date.now(),
-    //         ...payload,
-    //         status: 'pending'
-    //     }
-
-    //     leaveRequests.value.push(newRequest)
-    //     return newRequest
-    // }
-
     const createLeave = async (payload: CreateLeavePayload) => {
         await leaveService.create(payload)
         await loadMyLeaves(payload.userId)
     }
 
-    // const updateLeaveStatus = (id: number, status: LeaveStatus) => {
-
-    //     const request = leaveRequests.value.find(i => i.id === id)
-
-    //     if (!request) return null
-    //     if (request.status !== 'pending') return null
-
-    //     request.status = status
-    //     return request
-
-    // }
 
     const updateLeaveStatus = async (id: number, status: LeaveStatus) => {
         if (status === 'approved') {
@@ -81,7 +40,6 @@ export const useLeave = () => {
 
     return {
         leaveRequests: allLeaveRequests,
-        // getMyLeaveRequests,
         loadLeaves,
         loadMyLeaves,
         createLeave,

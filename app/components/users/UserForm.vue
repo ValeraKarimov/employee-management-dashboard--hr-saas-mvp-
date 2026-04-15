@@ -144,7 +144,7 @@ const handleSubmit = () => {
                 <option value="employee">Employee</option>
                 <option value="admin">Admin</option>
             </select>
-            <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.role }}</p>
+            <p v-if="errors.role" class="mt-1 text-sm text-red-600">{{ errors.role }}</p>
         </div>
         
         <div>

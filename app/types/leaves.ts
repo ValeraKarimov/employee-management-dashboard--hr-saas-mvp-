@@ -1,11 +1,21 @@
 export type LeaveStatus = 'pending' | 'approved' | 'rejected'
 
-export interface LeaveRequests {
+export interface LeaveRequest {
     id: number
     userId: number
-    userName: string
     startDate: string
     endDate: string
     reason: string
     status: LeaveStatus
+}
+
+export interface CreateLeavePayload {
+    userId: number
+    startDate: string
+    endDate: string
+    reason: string
+}
+
+export type LeaveTableRow = LeaveRequest & {
+    userName: string
 }

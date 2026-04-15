@@ -1,78 +1,45 @@
-import { ref } from "vue"
-import type { User } from '~/types/user'
+import type { CreateUserPayload, UpdateUserPayload, User } from '~/types/user'
+import { usersService } from '~/services/users/users.service'
 
-
-const users = ref<User[]>([
-    { 
-        id: 1, 
-        name: 'John One', 
-        email: 'john@example.com', 
-        role: 'admin',
-        department: 'Management',
-        position: 'HR Admin',
-        status: 'active'
-    },
-    { 
-        id: 2, 
-        name: 'Jane Two', 
-        email: 'jane@example.com', 
-        role: 'employee',
-        department: 'Marketing',
-        position: 'Content Specialist',
-        status: 'active'
-    },
-    { 
-        id: 3, 
-        name: 'Mike Three', 
-        email: 'mike@example.com', 
-        role: 'employee',
-        department: 'Sales',
-        position: 'Sales Manager',
-        status: 'inactive'
-    }
-])
-
+const users = ref<User[]>([])
 
 export const useUsers = () => {
+    
     const allUsers = users
+    
+    const loadUsers = async () => {
+        users.value = await usersService.getAll()
+    }
+    
+    onMounted(async () => {
+        await loadUsers()
+    })
 
-    const getUserById = (id: number) => {
-        return users.value.find(user => user.id === id) || null
+    const getUserById = async (id: number) => {
+        return await usersService.getById(id)
     }
 
-    const createUser = (payload: Omit<User, 'id'>) => {
-        const newUser: User = {
-            id: Date.now(),
-            ...payload
-        }
-
-        users.value.push(newUser)
-        return newUser
+    const createUser = async (payload: CreateUserPayload) => {
+        await usersService.create(payload)
+        await loadUsers()
     }
 
-    const updateUser = (id:number, payload: Omit<User, 'id'>) => {
-        
-        const index = users.value.findIndex(user => user.id === id)
-
-        if (index === -1) return null
-
-        users.value[index] = {
-            id, 
-            ...payload
-        }
-
-        return users.value[index]
+    const updateUser = async (id: number, payload: UpdateUserPayload) => {
+        await usersService.update(id, payload)
+        await loadUsers()
     }
 
-    const deleteUser = (id: number) => {
-        users.value = users.value.filter(user => user.id !== id)
+    const removeUser = async (id: number) => {
+        await usersService.remove(id)
+        await loadUsers()
     }
 
     return {
         users: allUsers,
+        loadUsers,
         getUserById,
         createUser,
         updateUser,
-        deleteUser
+        removeUser
     }
 }

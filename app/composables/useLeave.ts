@@ -1,57 +1,36 @@
-import { ref } from "vue";
-import type { LeaveRequests, LeaveStatus } from "~/types/leaves";
+import type { CreateLeavePayload, LeaveRequest, LeaveStatus } from "~/types/leaves";
+import { leaveService } from "~/services/leave/leave.service";
 
-const leaveRequests = ref<LeaveRequests[]>([
-    {
-        id: 1,
-        userId: 1,
-        userName: 'John One',
-        startDate: '2026-04-01',
-        endDate: '2026-04-05',
-        reason: 'Family Trip',
-        status: 'rejected'
-    },
-    {
-        id: 2,
-        userId: 2,
-        userName: 'Jane Two',
-        startDate: '2026-04-10',
-        endDate: '2026-04-12',
-        reason: 'Medical Appointment',
-        status: 'approved'
-    },
-    {
-        id: 3,
-        userId: 3,
-        userName: 'Mike Three',
-        startDate: '2026-05-01',
-        endDate: '2025-05-05',
-        reason: 'Personal',
-        status: 'pending'
-    },
-    {
-        id: 4,
-        userId: 1,
-        userName: 'John One',
-        startDate: '2026-06-24',
-        endDate: '2026-07-06',
-        reason: 'Special Weekend',
-        status: 'pending'
-    }
-])
+
+const leaveRequests = ref<LeaveRequest[]>([])
 
 export const useLeave = () => {
-    const allLeaveRequests = computed(() => leaveRequests.value)
 
+    
+    const allLeaveRequests = computed(() => leaveRequests.value)
+    
     // const getMyLeaveRequests = (userId: number) => {
     //     return computed(() => {
-    //         leaveRequests.value.filter(u => u.userId === userId)
-    //     })
+        //         leaveRequests.value.filter(u => u.userId === userId)
+        //     })
+        // }
+        
+    // const getMyLeaveRequests = (userId: number) => {
+    //     return leaveRequests.value.filter((request) => request.userId === userId)
     // }
-
-    const getMyLeaveRequests = (userId: number) => {
-        return leaveRequests.value.filter((request) => request.userId === userId)
+            
+    const loadLeaves = async () => {
+        leaveRequests.value = await leaveService.getAll()
     }
+    
+    onMounted(async () => {
+        await loadLeaves()
+    })
+    
+    const loadMyLeaves = async (userId: number) => {
+        leaveRequests.value = await leaveService.getByUser(userId)
+    }
+
 
 
     // const createLeaveRequest = (payload: Omit<LeaveRequests, 'id' | 'status'>) => {
@@ -62,33 +41,50 @@ export const useLeave = () => {
     //     })
     // }
 
-    const createLeaveRequest = (payload: Omit<LeaveRequests, 'id' | 'status'>) => {
-        const newRequest: LeaveRequests = {
-            id: Date.now(),
-            ...payload,
-            status: 'pending'
-        }
+    // const createLeaveRequest = (payload: Omit<LeaveRequest, 'id' | 'status'>) => {
+    //     const newRequest: LeaveRequest = {
+    //         id: Date.now(),
+    //         ...payload,
+    //         status: 'pending'
+    //     }
 
-        leaveRequests.value.push(newRequest)
-        return newRequest
+    //     leaveRequests.value.push(newRequest)
+    //     return newRequest
+    // }
+
+    const createLeave = async (payload: CreateLeavePayload) => {
+        await leaveService.create(payload)
+        await loadMyLeaves(payload.userId)
     }
 
-    const updateLeaveStatus = (id: number, status: LeaveStatus) => {
+    // const updateLeaveStatus = (id: number, status: LeaveStatus) => {
 
-        const request = leaveRequests.value.find(i => i.id === id)
+    //     const request = leaveRequests.value.find(i => i.id === id)
 
-        if (!request) return null
-        if (request.status !== 'pending') return null
+    //     if (!request) return null
+    //     if (request.status !== 'pending') return null
 
-        request.status = status
-        return request
+    //     request.status = status
+    //     return request
 
+    // }
+
+    const updateLeaveStatus = async (id: number, status: LeaveStatus) => {
+        if (status === 'approved') {
+            await leaveService.approve(id)
+        } else {
+            await leaveService.reject(id)
+        }
+
+        await loadLeaves()
     }
 
     return {
         leaveRequests: allLeaveRequests,
-        getMyLeaveRequests,
-        createLeaveRequest,
+        // getMyLeaveRequests,
+        loadLeaves,
+        loadMyLeaves,
+        createLeave,
         updateLeaveStatus
     }
 }

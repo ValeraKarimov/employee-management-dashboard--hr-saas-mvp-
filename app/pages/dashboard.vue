@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useUsers } from '~/composables/useUsers';
 import { useLeave } from '~/composables/useLeave';
@@ -12,7 +12,7 @@ definePageMeta({
 
 const auth = useAuthStore()
 const { users } = useUsers()
-const { leaveRequests, getMyLeaveRequests } = useLeave()
+const { leaveRequests, loadMyLeaves } = useLeave()
 
 const currentUser = computed(() => auth.user)
 
@@ -33,17 +33,30 @@ const pendingLeaveRequests = computed(() => {
     return leaveRequests.value.filter(l => l.status === 'pending').length
 })
 
-const myLeaveRequests = computed(() => {
-    if(!currentUser.value) return[]
-    return getMyLeaveRequests(currentUser.value.id)
+// const myLeaveRequests = computed(() => {
+//     if(!currentUser.value) return[]
+//     return getMyLeaveRequests(currentUser?.value.id)
+// })
+
+
+// const myLeaveRequests = computed(() => {
+//   if(!currentUser.value) return[]
+//   return loadMyLeaves(currentUser?.value.id)
+// })
+
+const myLeaveRequests = computed(() => leaveRequests.value)
+
+onMounted(() => {
+  if(!currentUser.value) {loadMyLeaves(currentUser.value.id)}
 })
 
+
 const myPendingLeaveRequests = computed(() => {
-    return myLeaveRequests.value.filter(r => r.status === 'pending').length
+    return myLeaveRequests?.value.filter(r => r.status === 'pending').length
 })
 
 const myApprovedLeaveRequests = computed(() => {
-    return myLeaveRequests.value.filter(r => r.status === 'approved').length
+    return myLeaveRequests?.value.filter(r => r.status === 'approved').length
 })
 
 </script>

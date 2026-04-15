@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useLeave } from '~/composables/useLeave';
-import type { LeaveStatus, LeaveRequests } from '~/types/leaves';
+import type { LeaveStatus, LeaveRequest } from '~/types/leaves';
 import { ui } from '~/constants/ui';
+import type { LeaveTableRow } from '~/types/leaves';
+import { users } from '~/services/users/users.mock';
 
 definePageMeta({
     middleware: ['auth', 'role'],
@@ -13,20 +15,20 @@ const { leaveRequests, updateLeaveStatus } = useLeave()
 
 const statusFilter = ref<'all' | LeaveStatus>('all')
 
-const filteredRequests = computed(() => {
-    if (statusFilter.value === 'all') {
-        return leaveRequests.value
-    }
+// const filteredRequests = computed(() => {
+//     if (statusFilter.value === 'all') {
+//         return leaveRequests.value
+//     }
 
-    return leaveRequests.value.filter(r => r.status === statusFilter.value)
+//     return leaveRequests.value.filter(r => r.status === statusFilter.value)
 
-})
+// })
 
-const handleApprove = (request: LeaveRequests) => {
+const handleApprove = (request: LeaveRequest) => {
     updateLeaveStatus(request.id, 'approved')
 }
 
-const handleReject = (request: LeaveRequests) => {
+const handleReject = (request: LeaveRequest) => {
     updateLeaveStatus(request.id, 'rejected')
 }
 
@@ -41,6 +43,22 @@ const getStatusClasses = (status: LeaveStatus) => {
 
     return ui.badge.leavePending
 }
+
+const leaveRows = computed<LeaveTableRow[]>(() => {
+
+    const filtered = statusFilter.value === 'all'
+        ? leaveRequests.value
+        : leaveRequests.value.filter(r => r.status === statusFilter.value)
+
+    return filtered.map((l) => {
+        const user = users.find(user => user.id === l.userId)
+
+        return {
+            ...l,
+            userName: user?.name ?? 'UNKNOWN USER',
+        }
+    })
+})
 
 </script>
 
@@ -73,7 +91,7 @@ const getStatusClasses = (status: LeaveStatus) => {
         </div>
 
         <div 
-            v-if="filteredRequests.length === 0"
+            v-if="leaveRows.length === 0"
             :class="ui.emptyState.base"
         >
             <h2 :class="ui.emptyState.title">No leave requests found</h2>
@@ -97,7 +115,7 @@ const getStatusClasses = (status: LeaveStatus) => {
 
                 <tbody>
                     <tr 
-                        v-for="request in filteredRequests"
+                        v-for="request in leaveRows"
                         :key="request.id"
                         class="border-t"
                     >

@@ -1,76 +1,69 @@
-# Nuxt Minimal Starter
+# HRM SaaS MVP
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Employee Management System (HRM) SaaS training project for portfolio.
 
-## Setup
+## Stack
 
-Make sure to install dependencies:
+### Frontend
+- Nuxt 4
+- Pinia
+- TailwindCSS
 
-```bash
-# npm
-npm install
+### Backend
+- Mock data currently
+- Laravel API planned / optional
 
-# pnpm
-pnpm install
+## Project goal
 
-# yarn
-yarn install
+The goal of the project is to create a clear MVP of the HRM system for study:
+- role-based UI
+- auth flow
+- users management
+- leave requests
+- gradual transition from mock data to API
 
-# bun
-bun install
-```
+This is an **MVP**, not a production solution.
 
-## Development Server
+---
 
-Start the development server on `http://localhost:3000`:
+## Current features
 
-```bash
-# npm
-npm run dev
+### Auth
+- fake login as admin or employee
+- auth state in Pinia
+- route protection via middleware
 
-# pnpm
-pnpm dev
+### Employee
+- dashboard
+- view leave requests
+- create leave request
 
-# yarn
-yarn dev
+### Admin
+- users list
+- create user
+- edit user
+- delete user
+- view all leave requests
+- approve / reject leave requests
 
-# bun
-bun run dev
-```
+### UI
+- role-based sidebar
+- role-based dashboard
+- shared UI constants
+- badges for roles and statuses
 
-## Production
+---
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
+## Project structure
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-# employee-management-dashboard--hr-saas-mvp-
+├─ components/
+├─ composables/
+├─ constants/
+├─ layouts/
+├─ middleware/
+├─ pages/
+├─ stores/
+├─ types/
+├─ services/
+└─ tailwind.config.ts

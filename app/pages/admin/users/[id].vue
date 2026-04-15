@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref } from 'vue';
 import { navigateTo, useRoute, createError } from '#app';
 import UserForm from '~/components/users/UserForm.vue';
 import { useUsers } from '~/composables/useUsers';
@@ -15,16 +15,21 @@ const { getUserById, updateUser } = useUsers()
 
 const userId = Number(route.params.id)
 
-const user = computed(() => getUserById(userId))
+// const user = computed(() => getUserById(userId))
+const user = ref<User | null>(null)
 
-if (!user.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'User not found'
-  })
-}
+onMounted(async () => {
+  user.value = await getUserById(userId)
 
-const handleSubmit = (payload: Omit<User, 'id'>) => {
+  if(!user.value) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'User not found'
+    })
+  }
+})
+
+const handleSubmit = async (payload: Omit<User, 'id'>) => {
   updateUser(userId, payload)
   navigateTo('/admin/users')
 }

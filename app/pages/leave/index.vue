@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useLeave } from '~/composables/useLeave';
 import type { LeaveStatus } from '~/types/leaves';
@@ -12,14 +12,22 @@ definePageMeta({
 })
 
 const auth = useAuthStore();
-const { getMyLeaveRequests } = useLeave()
+const { leaveRequests, loadMyLeaves } = useLeave()
 
 const currentUser = computed(() => auth.user)
 
-const myLeaveRequests = computed(() => {
-    if (!currentUser.value) return []
-    return getMyLeaveRequests(currentUser.value.id)
+onMounted(() => {
+    if (currentUser.value) {
+        loadMyLeaves(currentUser.value.id)
+    }
 })
+
+// const myLeaveRequests = computed(() => {
+//     if (!currentUser.value) return []
+//     return loadMyLeaves(currentUser.value.id)
+// })
+
+const myLeaveRequests = computed(() => leaveRequests.value)
 
 const getStatusClasses = (status: LeaveStatus) => {
     if (status === 'approved') {

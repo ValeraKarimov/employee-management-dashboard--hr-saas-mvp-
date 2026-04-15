@@ -11,7 +11,7 @@ definePageMeta({
 })
 
 const auth = useAuthStore()
-const { createLeaveRequest } = useLeave()
+const { createLeave } = useLeave()
 
 const form = reactive({
     startDate: '',
@@ -59,9 +59,16 @@ const handleSubmit = () => {
     if (!validateForm()) return;
     if (!auth.user) return;
 
-    createLeaveRequest({
+    // createLeaveRequest({
+    //     userId: auth.user.id,
+    //     userName: auth.user.name,
+    //     startDate: form.startDate,
+    //     endDate: form.endDate,
+    //     reason: form.reason.trim()
+    // })
+
+    createLeave({
         userId: auth.user.id,
-        userName: auth.user.name,
         startDate: form.startDate,
         endDate: form.endDate,
         reason: form.reason.trim()

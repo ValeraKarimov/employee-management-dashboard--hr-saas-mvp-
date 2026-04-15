@@ -9,7 +9,7 @@ definePageMeta({
   role: 'admin'
 })
 
-const { users, deleteUser } = useUsers()
+const { users,  removeUser } = useUsers()
 
 const search = ref('')
 
@@ -33,7 +33,7 @@ const handleDelete = (user: User) => {
   const comfirmed = window.confirm(`Delete user "${user.name}"?`)
   if (!comfirmed) return
 
-  deleteUser(user.id)
+  removeUser(user.id)
 }
 
 const getRoleClasses = (role: User['role']) => {

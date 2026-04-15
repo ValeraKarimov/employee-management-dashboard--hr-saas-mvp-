@@ -10,18 +10,27 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         login(user: AuthUser) {
             this.user = user
-            localStorage.setItem('user', JSON.stringify(user))
+            localStorage.setItem('auth_user', JSON.stringify(user))
         },
 
         logout() {
             this.user = null
-            localStorage.removeItem('user')
+            localStorage.removeItem('auth_user')
         },
 
         init() {
-            const data = localStorage.getItem('user')
-            if(data) {
-                this.user = JSON.parse(data)
+            const raw = localStorage.getItem('auth_user')
+
+            if(!raw) {
+                this.user = null
+                return
+            }
+
+            try {
+                this.user = JSON.parse(raw)
+            } catch {
+                this.user = null
+                localStorage.removeItem('auth_user')
             }
         }
     }

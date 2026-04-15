@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 import { useDocuments } from '~/composables/useDocuments'
-import type { CreateDocumentPayload } from '~/types/document'
+import type { CreateDocumentPayload, DocumentItem, UpdateDocumentPayload } from '~/types/document'
 
 definePageMeta({
   middleware: 'auth'
@@ -17,16 +17,26 @@ const {
   loading,
   saving,
   deleting,
+  updating,
   loadMyDocuments,
   loadingAllDocuments,
   addDocuments,
-  removeDocument
+  removeDocument,
+  updateDocumentItem
 } = useDocuments()
 
 const isAdmin = computed(() => currentUser.value?.role === 'admin')
 
 const form = reactive<CreateDocumentPayload>({
   userId: 0,
+  name: '',
+  type: '',
+  status: 'active'
+})
+
+const editingDocumentId = ref<number | null>(null)
+
+const editForm = reactive<UpdateDocumentPayload>({
   name: '',
   type: '',
   status: 'active'
@@ -71,6 +81,32 @@ const handleSubmit = async () => {
 
 const handleDelete = async (documentId: number) => {
   await removeDocument(documentId)
+}
+
+const startEditing = (document: DocumentItem) => {
+  editingDocumentId.value = document.id
+  editForm.name = document.name
+  editForm.type = document.type
+  editForm.status = document.status
+}
+
+const cancelEditing = () => {
+  editingDocumentId.value = null
+  editForm.name = ''
+  editForm.type = ''
+  editForm.status = 'active'
+}
+
+const handleUpdate = async (documentId: number) => {
+  const updated = await updateDocumentItem(documentId, {
+    name: editForm.name,
+    type: editForm.type,
+    status: editForm.status
+  })
+
+  if (updated) {
+    cancelEditing()
+  }
 }
 </script>
 
@@ -148,23 +184,83 @@ const handleDelete = async (documentId: number) => {
 
         <tbody class="divide-y">
           <tr v-for="document in documents" :key="document.id">
-            <td class="px-4 py-3 text-sm">{{ document.name }}</td>
-            <td class="px-4 py-3 text-sm">{{ document.type }}</td>
-            <td class="px-4 py-3 text-sm">
-              <span class="rounded-full border px-2 py-1 text-xs">
-                {{ document.status }}
-              </span>
-            </td>
-            <td class="px-4 py-3 text-sm">{{ document.uploadedAt }}</td>
-            <td class="px-4 py-3 text-sm">
-              <button
-                class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50 disabled:opacity-50"
-                :disabled="deleting"
-                @click="handleDelete(document.id)"
-              >
-                Delete
-              </button>
-            </td>
+            <template v-if="editingDocumentId === document.id">
+              <td class="px-4 py-3 text-sm">
+                <input
+                  v-model="editForm.name"
+                  type="text"
+                  class="w-full rounded-lg border px-3 py-2"
+                />
+              </td>
+
+              <td class="px-4 py-3 text-sm">
+                <input
+                  v-model="editForm.type"
+                  type="text"
+                  class="w-full rounded-lg border px-3 py-2"
+                />
+              </td>
+
+              <td class="px-4 py-3 text-sm">
+                <select
+                  v-model="editForm.status"
+                  class="w-full rounded-lg border px-3 py-2"
+                >
+                  <option value="active">active</option>
+                  <option value="archived">archived</option>
+                </select>
+              </td>
+
+              <td class="px-4 py-3 text-sm">{{ document.uploadedAt }}</td>
+
+              <td class="px-4 py-3 text-sm">
+                <div class="flex gap-2">
+                  <button
+                    class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50 disabled:opacity-50"
+                    :disabled="updating || !editForm.name || !editForm.type"
+                    @click="handleUpdate(document.id)"
+                  >
+                    {{ updating ? 'Saving...' : 'Save' }}
+                  </button>
+
+                  <button
+                    class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50"
+                    @click="cancelEditing"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </td>
+            </template>
+
+            <template v-else>
+              <td class="px-4 py-3 text-sm">{{ document.name }}</td>
+              <td class="px-4 py-3 text-sm">{{ document.type }}</td>
+              <td class="px-4 py-3 text-sm">
+                <span class="rounded-full border px-2 py-1 text-xs">
+                  {{ document.status }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm">{{ document.uploadedAt }}</td>
+              <td class="px-4 py-3 text-sm">
+                <div class="flex gap-2">
+                  <button
+                    class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50"
+                    @click="startEditing(document)"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50 disabled:opacity-50"
+                    :disabled="deleting"
+                    @click="handleDelete(document.id)"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </template>
           </tr>
         </tbody>
       </table>

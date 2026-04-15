@@ -1,7 +1,7 @@
 import { dataSource } from "~/config/data-source";
-import { getMyDocumentMock, getAllMyDocumentMock, createDocumentMock, deleteDocumentMock } from "./documents.mock";
-import { getMyDocumentApi, getAllMyDocumentApi, createDocumentApi, deleteDocumentApi } from "./documents.api";
-import type { DocumentItem, CreateDocumentPayload } from "~/types/document";
+import { getMyDocumentMock, getAllMyDocumentMock, createDocumentMock, deleteDocumentMock, updateDocumentMock } from "./documents.mock";
+import { getMyDocumentApi, getAllMyDocumentApi, createDocumentApi, deleteDocumentApi, updatedDocumentApi } from "./documents.api";
+import type { DocumentItem, CreateDocumentPayload, UpdateDocumentPayload } from "~/types/document";
 
 export const getMyDocuments = async (userId: number): Promise<DocumentItem[]> => {
     if (dataSource === 'mock') {
@@ -33,4 +33,15 @@ export const deleteDocument = async (documentId: number): Promise<boolean> => {
     }
 
     return deleteDocumentApi(documentId)
+}
+
+export const updateDocument = async (
+    documentId: number,
+    payload: UpdateDocumentPayload
+): Promise<DocumentItem | null> => {
+    if (dataSource === 'mock') {
+        return updateDocumentMock(documentId, payload)
+    }
+
+    return updatedDocumentApi(documentId, payload)
 }

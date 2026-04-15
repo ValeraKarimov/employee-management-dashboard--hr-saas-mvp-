@@ -1,4 +1,4 @@
-import type { CreateDocumentPayload, DocumentItem } from "~/types/document";
+import type { CreateDocumentPayload, DocumentItem, UpdateDocumentPayload } from "~/types/document";
 
 export const getMyDocumentApi = async (userId: number): Promise<DocumentItem[]> => {
     console.log('TODO: get my documents from API')
@@ -20,4 +20,9 @@ export const createDocumentApi = async (
 export const deleteDocumentApi = async (_documentId: number): Promise<boolean> => {
     console.log('TODO: delete document via API')
     return false
+}
+
+export const updatedDocumentApi = async (_documentId: number, _payload: UpdateDocumentPayload): Promise<DocumentItem | null> => {
+    console.log('TODO: update document via API')
+    return null
 }

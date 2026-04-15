@@ -13,3 +13,5 @@ export type CreateDocumentPayload = {
     type: string
     status: 'active' | 'archived'
 }
+
+export type UpdateDocumentPayload = Omit<DocumentItem, 'id' | 'userId' | 'uploadedAt'>

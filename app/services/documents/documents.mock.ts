@@ -1,4 +1,4 @@
-import type { DocumentItem, CreateDocumentPayload } from "~/types/document";
+import type { DocumentItem, CreateDocumentPayload, UpdateDocumentPayload } from "~/types/document";
 
 const documents: DocumentItem[] = [
     {
@@ -61,4 +61,30 @@ export const deleteDocumentMock = async (documentId: number): Promise<boolean> =
     documents.splice(documentIndex, -1)
 
     return true
+}
+
+export const updateDocumentMock = async (
+    documentId: number,
+    payload: UpdateDocumentPayload
+): Promise<DocumentItem | null> => {
+    const documentIndex = documents.findIndex(document => document.id === documentId)
+
+    if (documentIndex === -1) {
+        return null
+    }
+
+    const currentDocument = documents[documentIndex]
+
+    if (!currentDocument) {
+        return null
+    }
+
+    const updatedDocument: DocumentItem = {
+        ...currentDocument,
+        ...payload
+    }
+
+    documents[documentIndex] = updatedDocument
+
+    return updatedDocument
 }

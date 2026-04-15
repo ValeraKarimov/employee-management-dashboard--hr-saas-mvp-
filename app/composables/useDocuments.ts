@@ -1,12 +1,13 @@
 import { ref } from "vue";
-import type { DocumentItem, CreateDocumentPayload} from "~/types/document";
-import { getMyDocuments, getAllDocuments, createDocument, deleteDocument } from "~/services/documents/documents.service";
+import type { DocumentItem, CreateDocumentPayload, UpdateDocumentPayload} from "~/types/document";
+import { getMyDocuments, getAllDocuments, createDocument, deleteDocument, updateDocument } from "~/services/documents/documents.service";
 
 export const useDocuments = () => {
     const documents = ref<DocumentItem[]>([])
     const loading = ref(false)
     const saving = ref(false)
     const deleting = ref(false)
+    const updating = ref(false)
 
     const loadMyDocuments = async(userId: number) => {
         loading.value = true
@@ -63,15 +64,38 @@ export const useDocuments = () => {
         }
     }
 
+    const updateDocumentItem = async (
+        documentId: number,
+        payload: UpdateDocumentPayload
+    ) => {
+        updating.value = true
+
+        try {
+        const updatedDocument = await updateDocument(documentId, payload)
+
+        if (updatedDocument) {
+            documents.value = documents.value.map(doc =>
+            doc.id === documentId ? updatedDocument : doc
+            )
+        }
+
+        return updatedDocument
+        } finally {
+        updating.value = false
+        }
+    }
+
     return {
         documents,
         loading,
         saving,
         deleting,
+        updating,
         loadMyDocuments,
         loadingAllDocuments,
         addDocuments,
-        removeDocument
+        removeDocument,
+        updateDocumentItem
     }
 
 

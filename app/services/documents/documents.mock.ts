@@ -1,10 +1,11 @@
 import type { DocumentItem, CreateDocumentPayload, UpdateDocumentPayload } from "~/types/document";
 
-const documents: DocumentItem[] = [
+const initialDocuments: DocumentItem[] = [
     {
         id: 1,
         userId: 1,
-        name: 'Employment_contract.pdf',
+        name: 'Employment contract',
+        filename: 'Employment_contract.pdf',
         type: 'Contract',
         status: 'active',
         uploadedAt: '2026-04-03'
@@ -12,7 +13,8 @@ const documents: DocumentItem[] = [
     {
         id: 2,
         userId: 2,
-        name: 'Passport_copy.pdf',
+        name: 'Passport copy',
+        filename: 'Passport_copy.pdf',
         type: 'Identification',
         status: 'active',
         uploadedAt: '2026-04-03'
@@ -20,60 +22,88 @@ const documents: DocumentItem[] = [
     {
         id: 3,
         userId: 2,
-        name: 'NDA Agreement.pdf',
+        name: 'NDA Agreement',
+        filename: 'NDA_Agreement.pdf',
         type: 'Legal',
         status: 'archived',
         uploadedAt: '2026-04-03'
     },
 ]
 
+let documentsDb: DocumentItem[] = [...initialDocuments]
+
+const cloneDocument = (doc: DocumentItem): DocumentItem => ({
+    ...doc
+})
+
+
 export const getMyDocumentMock = async (userId: number): Promise<DocumentItem[]> => {
-    return documents.filter(d => d.userId === userId)
+    // return initialDocuments.filter(d => d.userId === userId)
+    return documentsDb
+    .filter(doc => doc.userId === userId)
+    .map(cloneDocument)
 }
 
 export const getAllMyDocumentMock = async (): Promise<DocumentItem[]> => {
-    return documents
+    // return initialDocuments
+    return documentsDb.map(cloneDocument)
 }
 
 export const createDocumentMock = async(payload: CreateDocumentPayload): Promise<DocumentItem> => {
+    const nextId = documentsDb.length > 0
+        ? Math.max(...documentsDb.map(doc => doc.id)) + 1
+        : 1
+    
     const newDocument: DocumentItem = {
-        id: Date.now(),
+        id: nextId,
         userId: payload.userId,
         name: payload.name,
+        filename: payload.filename,
         type: payload.type,
         status: payload.status,
         uploadedAt: new Date().toISOString().slice(0, 10)
     }
 
-    documents.unshift(newDocument)
+    documentsDb = [newDocument, ...documentsDb]
 
-    return newDocument
+    return cloneDocument(newDocument)
 }
 
 export const deleteDocumentMock = async (documentId: number): Promise<boolean> => {
-    const documentIndex = documents.findIndex(document => document.id === documentId)
 
-    if (documentIndex === -1) {
-        return false
-    }
+    const normalizeId = Number(documentId)
+    const beforeCount = documentsDb.length
+
+    documentsDb = documentsDb.filter(doc => Number(doc.id) !== normalizeId)
+
+    return documentsDb.length < beforeCount
+
+    // const documentIndex = initialDocuments.findIndex(document => document.id === documentId)
+
+    // if (documentIndex === -1) {
+    //     return false
+    // }
 
 
-    documents.splice(documentIndex, -1)
+    // initialDocuments.splice(documentIndex, -1)
 
-    return true
+    // return true
 }
 
 export const updateDocumentMock = async (
     documentId: number,
     payload: UpdateDocumentPayload
 ): Promise<DocumentItem | null> => {
-    const documentIndex = documents.findIndex(document => document.id === documentId)
+
+    const normalizeId = Number(documentId)
+
+    const documentIndex = documentsDb.findIndex(doc => Number(doc.id) === normalizeId)
 
     if (documentIndex === -1) {
         return null
     }
 
-    const currentDocument = documents[documentIndex]
+    const currentDocument = documentsDb[documentIndex]
 
     if (!currentDocument) {
         return null
@@ -84,7 +114,7 @@ export const updateDocumentMock = async (
         ...payload
     }
 
-    documents[documentIndex] = updatedDocument
+    documentsDb[documentIndex] = updatedDocument
 
-    return updatedDocument
+    return cloneDocument(updatedDocument)
 }

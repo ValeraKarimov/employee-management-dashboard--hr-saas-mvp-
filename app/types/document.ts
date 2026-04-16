@@ -2,6 +2,7 @@ export interface DocumentItem {
     id: number
     userId: number
     name: string
+    filename: string
     type: string
     status: 'active' | 'archived'
     uploadedAt: string
@@ -10,6 +11,7 @@ export interface DocumentItem {
 export type CreateDocumentPayload = {
     userId: number
     name: string
+    filename: string
     type: string
     status: 'active' | 'archived'
 }

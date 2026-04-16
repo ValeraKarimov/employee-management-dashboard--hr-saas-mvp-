@@ -34,16 +34,18 @@ export const useDocuments = () => {
         saving.value = true
 
         try {
-            const createdDocument = await createDocument(payload)
+            // const createdDocument = await createDocument(payload)
 
-            if (createdDocument) {
-                documents.value.unshift(createdDocument)
-            }
+            // if (createdDocument) {
+            //     documents.value.unshift(createdDocument)
+            // }
 
-            return createdDocument
+            // return createdDocument
+
+            return await createDocument(payload)
 
         } finally {
-            saving.value = true
+            saving.value = false
         }
     }
 
@@ -51,13 +53,15 @@ export const useDocuments = () => {
         deleting.value = true
 
         try {
-            const success = await deleteDocument(documentId)
+            // const success = await deleteDocument(documentId)
 
-            if(success) {
-                documents.value = documents.value.filter(d => d.id !== documentId)
-            }
+            // if(success) {
+            //     documents.value = documents.value.filter(d => d.id !== documentId)
+            // }
             
-            return success
+            // return success
+
+            return await deleteDocument(documentId)
 
         } finally {
             deleting.value = false
@@ -71,15 +75,18 @@ export const useDocuments = () => {
         updating.value = true
 
         try {
-        const updatedDocument = await updateDocument(documentId, payload)
+        // const updatedDocument = await updateDocument(documentId, payload)
 
-        if (updatedDocument) {
-            documents.value = documents.value.map(doc =>
-            doc.id === documentId ? updatedDocument : doc
-            )
-        }
+        // if (updatedDocument) {
+        //     documents.value = documents.value.map(doc =>
+        //     doc.id === documentId ? updatedDocument : doc
+        //     )
+        // }
 
-        return updatedDocument
+        // return updatedDocument
+
+        return await updateDocument(documentId, payload)
+
         } finally {
         updating.value = false
         }

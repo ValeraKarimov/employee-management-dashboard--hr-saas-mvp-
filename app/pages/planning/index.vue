@@ -1,0 +1,220 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { useShifts } from '~/composables/useShifts'
+import { useAuthStore } from '~/stores/auth'
+import type { Shift } from '~/types/shifts'
+
+definePageMeta({
+  middleware: ['auth']
+})
+
+const authStore = useAuthStore()
+const { shifts, loading, loadShifts } = useShifts()
+
+const currentUser = computed(() => authStore.user)
+
+const currentWeekDate = ref(new Date())
+
+const goToPreviousWeek = () => {
+  const newDate = new Date(currentWeekDate.value)
+  newDate.setDate(newDate.getDate() - 7)
+  currentWeekDate.value = newDate
+}
+
+const goToNextWeek = () => {
+  const newDate = new Date(currentWeekDate.value)
+  newDate.setDate(newDate.getDate() + 7)
+  currentWeekDate.value = newDate
+}
+
+const visibleShifts = computed<Shift[]>(() => {
+  if (!currentUser.value) {
+    return []
+  }
+
+  if (currentUser.value.role === 'admin') {
+    return shifts.value
+  }
+
+  return shifts.value.filter(shift => shift.userId === currentUser.value?.id)
+})
+
+const groupedShifts = computed<Record<string, Shift[]>>(() => {
+  return weeklyShifts.value.reduce((acc, shift) => {
+    if (!acc[shift.date]) {
+      acc[shift.date] = []
+    }
+
+    acc[shift.date]?.push(shift)
+    return acc
+  }, {} as Record<string, Shift[]>)
+})
+
+const sortedDates = computed(() => {
+  return Object.keys(groupedShifts.value).sort((a, b) => {
+    return new Date(a).getTime() - new Date(b).getTime()
+  })
+})
+
+const formatDate = (date: string) => {
+    return new Intl.DateTimeFormat('en-GB', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    }).format(new Date(date))
+}
+
+const getStartOfWeek = (date: Date) => {
+  const d = new Date(date)
+  const day = d.getDay() || 7 // Sunday = 0 → 7
+  d.setDate(d.getDate() - day + 1)
+  d.setHours(0, 0, 0, 0)
+  console.log('getStartOfWeek: ', d)
+  return d
+}
+
+const getEndOfWeek = (date: Date) => {
+  const start = getStartOfWeek(date)
+  const end = new Date(start)
+  end.setDate(start.getDate() + 6)
+  end.setHours(23, 59, 59, 999)
+    console.log('getEndOfWeek: ', end)
+
+  return end
+}
+
+const weeklyShifts = computed(() => {
+//   const now = new Date()
+//   const start = getStartOfWeek(now)
+//   const end = getEndOfWeek(now)
+
+    const start = getStartOfWeek(currentWeekDate.value)
+    const end = getEndOfWeek(currentWeekDate.value)
+
+  return visibleShifts.value.filter(shift => {
+    const shiftDate = new Date(shift.date)
+      console.log('weeklyShifts: ', shiftDate >= start && shiftDate <= end)
+
+    return shiftDate >= start && shiftDate <= end
+  })
+})
+
+const formatWeekRange = (date: Date) => {
+  const start = getStartOfWeek(date)
+  const end = getEndOfWeek(date)
+
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  })
+
+  return `${formatter.format(start)} - ${formatter.format(end)}`
+}
+
+const scheduleStatusClasses = (status: Shift['scheduleStatus']) => {
+  return status === 'confirmed'
+    ? 'bg-green-100 text-green-700'
+    : 'bg-yellow-100 text-yellow-700'
+}
+
+const hoursApprovalStatusClasses = (status: Shift['hoursApprovalStatus']) => {
+  return status === 'approved'
+    ? 'bg-blue-100 text-blue-700'
+    : 'bg-gray-100 text-gray-700'
+}
+
+onMounted(() => {
+  loadShifts()
+})
+</script>
+
+<template>
+  <div class="space-y-6">
+    <div>
+   <h1 class="text-2xl font-semibold">Planning Overview</h1>
+    <p class="text-sm text-gray-500">
+      {{ formatWeekRange(currentWeekDate) }}
+    </p>
+  </div>
+
+  <div class="flex gap-2">
+    <button
+      class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+      @click="goToPreviousWeek"
+    >
+      Prev week
+    </button>
+
+    <button
+      class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+      @click="goToNextWeek"
+    >
+      Next week
+    </button>
+    </div>
+
+    <div v-if="loading" class="rounded-lg border bg-white p-4">
+      Loading shifts...
+    </div>
+
+    <div v-else-if="sortedDates.length === 0" class="rounded-lg border bg-white p-4">
+      No shifts found.
+    </div>
+
+    <div v-else class="space-y-6">
+      <section
+        v-for="date in sortedDates"
+        :key="date"
+        class="rounded-lg border bg-white p-4 shadow-sm"
+      >
+        <h2 class="mb-4 text-lg font-semibold">
+          {{ formatDate(date) }}
+        </h2>
+
+        <div class="space-y-3">
+          <div
+            v-for="shift in groupedShifts[date]"
+            :key="shift.id"
+            class="rounded-lg border p-4"
+          >
+            <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <p class="text-base font-semibold">
+                  {{ shift.startTime }} - {{ shift.endTime }}
+                </p>
+                <p class="text-sm text-gray-500">
+                  {{ shift.city }} · {{ shift.position }}
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <span
+                  class="rounded-full px-3 py-1 text-xs font-medium"
+                  :class="scheduleStatusClasses(shift.scheduleStatus)"
+                >
+                  Schedule: {{ shift.scheduleStatus }}
+                </span>
+
+                <span
+                  class="rounded-full px-3 py-1 text-xs font-medium"
+                  :class="hoursApprovalStatusClasses(shift.hoursApprovalStatus)"
+                >
+                  Hours: {{ shift.hoursApprovalStatus }}
+                </span>
+              </div>
+            </div>
+
+            <div class="grid gap-2 text-sm md:grid-cols-2">
+              <p><span class="font-medium">Company:</span> {{ shift.company }}</p>
+              <p><span class="font-medium">City:</span> {{ shift.city }}</p>
+              <p><span class="font-medium">Position:</span> {{ shift.position }}</p>
+              <p><span class="font-medium">Time:</span> {{ shift.startTime }} - {{ shift.endTime }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</template>

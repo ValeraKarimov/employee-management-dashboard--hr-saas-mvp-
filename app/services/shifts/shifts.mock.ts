@@ -107,10 +107,21 @@ export const confirmShiftMock = async (id: number): Promise<Shift> => {
         throw new Error("Shift not found");
     }
 
+    const currentDocument = shiftDb[index]
+
+    if (!currentDocument) {
+        throw new Error('Shift not found')
+    }
+
     const updatedShift: Shift = {
-        ...shiftDb[index],
+        ...currentDocument,
         scheduleStatus: 'confirmed'
     }
+
+    // const updatedShift: Shift = {
+    //     ...shiftDb[index],
+    //     scheduleStatus: 'confirmed'
+    // }
 
     shiftDb[index] = updatedShift
 
@@ -124,10 +135,22 @@ export const approveShiftHoursMock = async (id: Number): Promise<Shift> => {
         throw new Error("Shift not found");
     }
 
+    const currentDoc = shiftDb[index]
+
+    if (!currentDoc) {
+        throw new Error("Shift not found");
+        
+    }
+
     const updatedShift: Shift = {
-        ...shiftDb[index],
+        ...currentDoc,
         hoursApprovalStatus: 'approved'
     }
+
+    // const updatedShift: Shift = {
+    //     ...shiftDb[index],
+    //     hoursApprovalStatus: 'approved'
+    // }
 
     shiftDb[index] = updatedShift
 

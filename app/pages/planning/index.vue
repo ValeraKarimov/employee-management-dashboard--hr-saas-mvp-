@@ -144,36 +144,61 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div>
-   <h1 class="text-2xl font-semibold">Planning Overview</h1>
+<div class="space-y-6">
+ <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+  <div>
+    <h1 class="text-2xl font-semibold">Planning Overview</h1>
     <p class="text-sm text-gray-500">
       {{ formatWeekRange(currentWeekDate) }}
     </p>
   </div>
 
-  <div class="flex gap-2">
-    <button
-      class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
-      @click="goToPreviousWeek"
-    >
-      Prev week
-    </button>
+  <div class="flex flex-wrap gap-2">
+        <button
+            class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+            @click="goToPreviousWeek"
+            >
+            Prev week
+        </button>
 
-    <button
-      class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
-      @click="goToNextWeek"
-    >
-      Next week
-    </button>
+        <button
+            class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+            @click="goToNextWeek"
+            >
+            Next week
+        </button>
+
+        <NuxtLink
+            v-if="isAdmin"
+            to="/admin/planning/create"
+            class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+            >
+            Create shift
+        </NuxtLink>
     </div>
+</div>
 
     <div v-if="loading" class="rounded-lg border bg-white p-4">
       Loading shifts...
     </div>
 
-    <div v-else-if="sortedDates.length === 0" class="rounded-lg border bg-white p-4">
-      No shifts found.
+    <div
+    v-else-if="sortedDates.length === 0"
+    class="rounded-lg border bg-white p-6 text-center shadow-sm"
+    >
+    <h2 class="text-lg font-semibold">No shifts for this week</h2>
+    <p class="mt-1 text-sm text-gray-500">
+        There are no shifts in the selected week.
+    </p>
+
+    <div v-if="isAdmin" class="mt-4">
+        <NuxtLink
+        to="/admin/planning/create"
+        class="inline-flex rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+        >
+        Create first shift
+        </NuxtLink>
+    </div>
     </div>
 
     <div v-else class="space-y-6">
@@ -230,12 +255,21 @@ onMounted(() => {
                 <button
                     v-if="isAdmin && shift.hoursApprovalStatus === 'pending'"
                     type="button"
-                    class="rounded-lg border px-3 py-1 text-xs font-medium hover:bg-gray-50"
+                    class="rounded-lg border px-3 py-1 text-xs font-medium bg-black text-white hover:bg-gray-50 hover:text-black"
                     :disabled="submitting"
                     @click="handleApproveHours(shift.id)"
                 >
                     {{ submitting ? 'Approving...' : 'Approve hours' }}
                 </button>
+
+
+                <NuxtLink
+                    v-if="isAdmin"
+                    :to="`/admin/planning/${shift.id}/edit`"
+                    class="rounded-lg border px-3 py-1 text-xs font-medium hover:bg-gray-50"
+                    >
+                    Edit
+                </NuxtLink>
 
 
               </div>

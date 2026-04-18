@@ -11,7 +11,7 @@ const shiftDb: Shift[] = [
         city: 'Roosendaal',
         position: 'Outbound / Conveyer',
         company: 'Getto N.V.',
-        scheduleStatus: 'confirmed',
+        scheduleStatus: 'pending',
         hoursApprovalStatus: 'pending'
     },
     {
@@ -98,4 +98,39 @@ export const deleteShiftMock = async (id: number): Promise<void> => {
     }
 
     shiftDb.splice(index, 1)
+}
+
+export const confirmShiftMock = async (id: number): Promise<Shift> => {
+    const index = shiftDb.findIndex(s => s.id === id)
+
+    if (index === -1) {
+        throw new Error("Shift not found");
+    }
+
+    const updatedShift: Shift = {
+        ...shiftDb[index],
+        scheduleStatus: 'confirmed'
+    }
+
+    shiftDb[index] = updatedShift
+
+    return { ...updatedShift }
+}
+
+export const approveShiftHoursMock = async (id: Number): Promise<Shift> => {
+    const index = shiftDb.findIndex(s => s.id === id)
+
+    if (index === -1) {
+        throw new Error("Shift not found");
+    }
+
+    const updatedShift: Shift = {
+        ...shiftDb[index],
+        hoursApprovalStatus: 'approved'
+    }
+
+    shiftDb[index] = updatedShift
+
+    return { ...updatedShift }
+
 }

@@ -1,4 +1,4 @@
-import { createShiftMock, getShiftMock, getShiftByIdMock, updateShiftMock, deleteShiftMock } from "./shifts.mock";
+import { createShiftMock, getShiftMock, getShiftByIdMock, updateShiftMock, deleteShiftMock, confirmShiftMock, approveShiftHoursMock } from "./shifts.mock";
 import type { CreateShiftPayload, Shift, UpdateShiftPayload } from "~/types/shifts";
 
 export const getShifts = async(): Promise<Shift[]> => {
@@ -24,4 +24,12 @@ export const updateShift = async (
 
 export const deleteShift = async (id: number): Promise<void> => {
     return deleteShiftMock(id)
+}
+
+export const confirmShift = async (id: number): Promise<Shift> => {
+    return confirmShiftMock(id)
+}
+
+export const approveShiftHours = async (id: number): Promise<Shift> => {
+    return approveShiftHoursMock(id)
 }

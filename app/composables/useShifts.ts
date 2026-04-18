@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { getShifts, createShift, getShiftById, updateShift, deleteShift } from "~/services/shifts/shifts.service";
+import { getShifts, createShift, getShiftById, updateShift, deleteShift, confirmShift, approveShiftHours } from "~/services/shifts/shifts.service";
 import type { CreateShiftPayload, Shift, UpdateShiftPayload } from "~/types/shifts";
 
 export const useShifts = () => {
@@ -62,6 +62,26 @@ export const useShifts = () => {
         }
     }
 
+    const confirmExistingShift = async (id: number) => {
+        submitting.value = true
+
+        try {
+            return await confirmShift(id)
+        } finally {
+            submitting.value = false
+        }
+    }
+
+    const approveExistingShiftHours = async (id: number) => {
+        submitting.value = true
+
+        try {
+            return await approveShiftHours(id)
+        } finally {
+            submitting.value = false
+        }
+    }
+
     return {
         shifts,
         loading,
@@ -70,6 +90,8 @@ export const useShifts = () => {
         createNewShift,
         loadShiftById,
         updateExistingShift,
-        deleteExistingShift
+        deleteExistingShift,
+        confirmExistingShift,
+        approveExistingShiftHours
     }
 }

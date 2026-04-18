@@ -9,9 +9,12 @@ definePageMeta({
 })
 
 const authStore = useAuthStore()
-const { shifts, loading, loadShifts } = useShifts()
+const { shifts, loading, loadShifts, confirmExistingShift, submitting, approveExistingShiftHours } = useShifts()
 
 const currentUser = computed(() => authStore.user)
+
+const isAdmin = computed(() => currentUser.value?.role === 'admin')
+const isEmployee = computed(() => currentUser.value?.role === 'employee')
 
 const currentWeekDate = ref(new Date())
 
@@ -55,6 +58,16 @@ const sortedDates = computed(() => {
     return new Date(a).getTime() - new Date(b).getTime()
   })
 })
+
+const handleConfirmShift = async (shiftId: number) => {
+    await confirmExistingShift(shiftId)
+    await loadShifts()
+}
+
+const handleApproveHours = async (shiftId: number) => {
+    await approveExistingShiftHours(shiftId)
+    await loadShifts()
+}
 
 const formatDate = (date: string) => {
     return new Intl.DateTimeFormat('en-GB', {
@@ -203,6 +216,28 @@ onMounted(() => {
                 >
                   Hours: {{ shift.hoursApprovalStatus }}
                 </span>
+
+                <button
+                    v-if="isEmployee && shift.scheduleStatus === 'pending'"
+                    type="button"
+                    class="rounded-lg border px-3 py-1 text-xs font-medium bg-black text-white  hover:bg-gray-50 hover:text-black"
+                    :disabled="submitting"
+                    @click="handleConfirmShift(shift.id)"
+                    >
+                    {{ submitting ? 'Confirming...' : 'Confirm shift' }}
+                </button>
+
+                <button
+                    v-if="isAdmin && shift.hoursApprovalStatus === 'pending'"
+                    type="button"
+                    class="rounded-lg border px-3 py-1 text-xs font-medium hover:bg-gray-50"
+                    :disabled="submitting"
+                    @click="handleApproveHours(shift.id)"
+                >
+                    {{ submitting ? 'Approving...' : 'Approve hours' }}
+                </button>
+
+
               </div>
             </div>
 

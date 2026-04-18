@@ -23,7 +23,8 @@ const navigation: NavItem[] = [
     { label: 'Leave Requests', to: '/admin/leave', roles: ['admin'], exact: true },
     { label: 'My Leave', to: '/leave', roles: ['employee'], exact: true },
     { label: 'Create New Request', to: '/leave/create', roles: ['employee'], exact: true },
-    { label: 'Planning', to: '/planning', roles: ['employee', 'admin'], exact: true },
+    { label: 'Planning list', to: '/planning', roles: ['employee', 'admin'], exact: true },
+    { label: 'Add to Planning', to: '/admin/planning/create', roles: ['admin'], exact: true },
 ]
 
 const currentRole = computed(() => auth.user?.role)

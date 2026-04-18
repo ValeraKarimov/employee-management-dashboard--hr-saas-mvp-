@@ -13,3 +13,6 @@ export interface Shift {
     scheduleStatus: ScheduleStatus
     hoursApprovalStatus: HoursApprovalStatus
 }
+
+export type CreateShiftPayload = Omit<Shift, 'id'>
+export type UpdateShiftPayload = Omit<Shift, 'id'>

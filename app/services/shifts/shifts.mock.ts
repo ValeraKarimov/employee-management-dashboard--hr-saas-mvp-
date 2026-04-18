@@ -1,4 +1,5 @@
-import type { Shift } from "~/types/shifts";
+import type { CreateShiftPayload, Shift, UpdateShiftPayload } from "~/types/shifts";
+
 
 const shiftDb: Shift[] = [
     {
@@ -41,4 +42,60 @@ const shiftDb: Shift[] = [
 
 export const getShiftMock = async(): Promise<Shift[]> => {
     return [...shiftDb]
+}
+
+export const createShiftMock = async (
+    payload: CreateShiftPayload
+): Promise<Shift> => {
+    const nextId = shiftDb.length > 0
+    ? Math.max(...shiftDb.map(shift => shift.id)) + 1
+    : 1
+
+    const newShift: Shift = {
+        id: nextId,
+        ...payload
+    }
+
+    shiftDb.push(newShift)
+
+    console.log(newShift)
+
+    return newShift
+}
+
+export const getShiftByIdMock = async (id: number): Promise<Shift | null> => {
+    const shift = shiftDb.find(s => s.id === id)
+
+    return shift ? { ...shift } : null
+}
+
+export const updateShiftMock = async (
+    id: number,
+    payload: UpdateShiftPayload
+): Promise<Shift> => {
+    const index = shiftDb.findIndex(s => s.id === id)
+
+    if (index === -1) {
+        throw new Error("Shift not found");
+    }
+
+    const updatedShift: Shift = {
+        ...shiftDb[index],
+        ...payload,
+        id
+    }
+
+    shiftDb[index] = updatedShift
+
+    return { ...updatedShift }
+}
+
+export const deleteShiftMock = async (id: number): Promise<void> => {
+    const index = shiftDb.findIndex(s => s.id === id)
+
+    if (index === -1) {
+        throw new Error("Shift not found");
+    }
+
+    shiftDb.splice(index, 1)
 }

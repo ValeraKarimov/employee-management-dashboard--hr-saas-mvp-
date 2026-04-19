@@ -2,14 +2,20 @@
 import { computed, onMounted, ref } from 'vue'
 import { useShifts } from '~/composables/useShifts'
 import { useAuthStore } from '~/stores/auth'
-import type { Shift } from '~/types/shifts'
+import { useUsers } from '~/composables/useUsers'
+import type { Shift, ScheduleStatus } from '~/types/shifts'
 
 definePageMeta({
   middleware: ['auth']
 })
 
+const { users, loadUsers } = useUsers()
 const authStore = useAuthStore()
 const { shifts, loading, loadShifts, confirmExistingShift, submitting, approveExistingShiftHours } = useShifts()
+
+const searchQuery = ref('')
+const statusFilter = ref<'all' | ScheduleStatus>('all')
+
 
 const currentUser = computed(() => authStore.user)
 
@@ -30,6 +36,22 @@ const goToNextWeek = () => {
   currentWeekDate.value = newDate
 }
 
+const filteredShifts = computed(() => {
+  return weeklyShifts.value.filter(shift => {
+    const matchesSearch =
+      searchQuery.value === '' ||
+      getEmployeeName(shift.userId).toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      shift.city.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      shift.company.toLowerCase().includes(searchQuery.value.toLowerCase())
+
+    const matchesStatus =
+      statusFilter.value === 'all' ||
+      shift.scheduleStatus === statusFilter.value
+
+    return matchesSearch && matchesStatus
+  })
+})
+
 const visibleShifts = computed<Shift[]>(() => {
   if (!currentUser.value) {
     return []
@@ -43,7 +65,7 @@ const visibleShifts = computed<Shift[]>(() => {
 })
 
 const groupedShifts = computed<Record<string, Shift[]>>(() => {
-  const grouped = weeklyShifts.value.reduce((acc, shift) => {
+  const grouped = filteredShifts.value.reduce((acc, shift) => {
     if (!acc[shift.date]) {
       acc[shift.date] = []
     }
@@ -52,7 +74,7 @@ const groupedShifts = computed<Record<string, Shift[]>>(() => {
     return acc
   }, {} as Record<string, Shift[]>)
 
-  // 🔥 сортировка внутри дня
+  // sort inside of day
   Object.keys(grouped).forEach(date => {
     grouped[date]?.sort((a, b) => {
       return a.startTime.localeCompare(b.startTime)
@@ -87,6 +109,10 @@ const formatDate = (date: string) => {
     }).format(new Date(date))
 }
 
+const goToCurrentWeek = () => {
+  currentWeekDate.value = new Date()
+}
+
 const getStartOfWeek = (date: Date) => {
   const d = new Date(date)
   const day = d.getDay() || 7 // Sunday = 0 → 7
@@ -107,9 +133,6 @@ const getEndOfWeek = (date: Date) => {
 }
 
 const weeklyShifts = computed(() => {
-//   const now = new Date()
-//   const start = getStartOfWeek(now)
-//   const end = getEndOfWeek(now)
 
     const start = getStartOfWeek(currentWeekDate.value)
     const end = getEndOfWeek(currentWeekDate.value)
@@ -147,8 +170,14 @@ const hoursApprovalStatusClasses = (status: Shift['hoursApprovalStatus']) => {
     : 'bg-gray-100 text-gray-700'
 }
 
+const getEmployeeName = (userId: number) => {
+  const user = users.value.find(user => user.id === userId)
+  return user?.name ?? `User #${userId}`
+}
+
 onMounted(() => {
   loadShifts()
+  loadUsers()
 })
 </script>
 
@@ -163,6 +192,37 @@ onMounted(() => {
   </div>
 
   <div class="flex flex-wrap gap-2">
+
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search by employee, city, company..."
+            class="rounded-lg border px-3 py-2 text-sm"
+          >
+
+          <select
+            v-model="statusFilter"
+            class="rounded-lg border px-3 py-2 text-sm"
+          >
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+          </select>
+
+          <button
+            class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
+            @click="searchQuery = ''; statusFilter = 'all'"
+          >
+            Reset
+          </button>
+
+        <button
+          class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+          @click="goToCurrentWeek"
+        >
+          Current week
+        </button>
+
         <button
             class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
             @click="goToPreviousWeek"
@@ -231,6 +291,14 @@ onMounted(() => {
                 <p class="text-base font-semibold">
                   {{ shift.startTime }} - {{ shift.endTime }}
                 </p>
+
+                  <p
+                    v-if="isAdmin"
+                    class="text-sm font-medium text-gray-700"
+                  >
+                    Employee: {{ getEmployeeName(shift.userId) }}
+                  </p>
+
                 <p class="text-sm text-gray-500">
                   {{ shift.city }} · {{ shift.position }}
                 </p>

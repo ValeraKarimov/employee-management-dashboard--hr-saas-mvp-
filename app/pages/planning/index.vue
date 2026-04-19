@@ -43,7 +43,7 @@ const visibleShifts = computed<Shift[]>(() => {
 })
 
 const groupedShifts = computed<Record<string, Shift[]>>(() => {
-  return weeklyShifts.value.reduce((acc, shift) => {
+  const grouped = weeklyShifts.value.reduce((acc, shift) => {
     if (!acc[shift.date]) {
       acc[shift.date] = []
     }
@@ -51,6 +51,15 @@ const groupedShifts = computed<Record<string, Shift[]>>(() => {
     acc[shift.date]?.push(shift)
     return acc
   }, {} as Record<string, Shift[]>)
+
+  // 🔥 сортировка внутри дня
+  Object.keys(grouped).forEach(date => {
+    grouped[date]?.sort((a, b) => {
+      return a.startTime.localeCompare(b.startTime)
+    })
+  })
+
+  return grouped
 })
 
 const sortedDates = computed(() => {

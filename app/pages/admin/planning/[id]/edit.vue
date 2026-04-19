@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { reactive, onMounted } from 'vue';
+import { reactive, onMounted,ref, computed } from 'vue';
+import { useUsers } from '~/composables/useUsers';
 import { navigateTo, useRoute } from '#app';
 import { useShifts } from '~/composables/useShifts';
 import type { UpdateShiftPayload } from '~/types/shifts';
@@ -11,6 +12,12 @@ definePageMeta({
 
 const route = useRoute()
 const shiftId = Number(route.params.id)
+
+const { users, loadUsers } = useUsers()
+
+const employeeQuery = ref('')
+const selectedEmployeeName = ref('')
+const showEmployeeResults = ref(false)
 
 const { loadShiftById, updateExistingShift, deleteExistingShift, loading, submitting } = useShifts()
 
@@ -43,6 +50,42 @@ const loadShift = async () => {
     form.company = shift.company
     form.scheduleStatus = shift.scheduleStatus
     form.hoursApprovalStatus = shift.hoursApprovalStatus
+
+    const selectedEmployee = employeeOptions.value.find(
+        e => e.id === shift.userId
+    )
+
+    if (selectedEmployee) {
+        employeeQuery.value = selectedEmployee.name
+        selectedEmployeeName.value = selectedEmployee.name
+    }
+
+}
+
+const employeeOptions = computed(() => {
+    return users.value.filter(u => u.role === 'employee')
+})
+
+const filteredEmployees = computed(() => {
+    const query = employeeQuery.value.trim().toLowerCase()
+
+    if (!query) return employeeOptions.value
+
+    return employeeOptions.value.filter(e => e.name.toLowerCase().includes(query))
+
+})
+
+const selectEmployee = (employee: { id: number, name: string }) => {
+    form.userId = employee.id
+    employeeQuery.value = employee.name
+    selectedEmployeeName.value = employee.name
+    showEmployeeResults.value = false
+}
+
+const handleEmployeeInput = () => {
+    form.userId = 0
+    selectedEmployeeName.value = ''
+    showEmployeeResults.value = true
 }
 
 const handleSubmit = async () => {
@@ -70,8 +113,13 @@ const handleDelete = async () => {
     await navigateTo('/planning')
 }
 
+const initPage = async () => {
+    await loadUsers()
+    await loadShift()
+}
+
 onMounted(() => {
-    loadShift()
+    initPage()
 })
 
 </script>
@@ -95,7 +143,8 @@ onMounted(() => {
       @submit.prevent="handleSubmit"
     >
       <div class="grid gap-4 md:grid-cols-2">
-        <div>
+
+        <!-- <div>
           <label class="mb-1 block text-sm font-medium">Employee User ID</label>
           <input
             v-model.number="form.userId"
@@ -103,7 +152,41 @@ onMounted(() => {
             min="1"
             class="w-full rounded-lg border px-3 py-2"
           >
+        </div> -->
+
+        <div class="relative md:col-span-2">
+  <label class="mb-1 block text-sm font-medium">Employee</label>
+
+  <input
+    v-model="employeeQuery"
+    type="text"
+    class="w-full rounded-lg border px-3 py-2"
+    placeholder="Search employee by name"
+    @input="handleEmployeeInput"
+    @focus="showEmployeeResults = true"
+  >
+
+        <div
+            v-if="showEmployeeResults && filteredEmployees.length > 0"
+            class="absolute z-10 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border bg-white shadow-lg"
+        >
+            <button
+            v-for="employee in filteredEmployees"
+            :key="employee.id"
+            type="button"
+            class="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
+            @click="selectEmployee(employee)"
+            >
+            <span class="font-medium">{{ employee.name }}</span>
+            <span class="ml-2 text-gray-500">#{{ employee.id }}</span>
+            </button>
         </div>
+
+        <p v-if="selectedEmployeeName" class="mt-2 text-sm text-gray-500">
+            Selected employee: {{ selectedEmployeeName }}
+        </p>
+        </div>
+
 
         <div>
           <label class="mb-1 block text-sm font-medium">Date</label>

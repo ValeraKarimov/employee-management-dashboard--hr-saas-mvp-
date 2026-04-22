@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useUsers } from '~/composables/useUsers';
 import type { User } from '~/types/user';
 import { ui } from '~/constants/ui';
@@ -9,9 +9,10 @@ definePageMeta({
   role: 'admin'
 })
 
-const { users,  removeUser } = useUsers()
+const { users, removeUser, loadUsers } = useUsers()
 
 const search = ref('')
+const isLoading = ref(true)
 
 const filteredUsers = computed(() => {
   const query = search.value.toLowerCase().trim()
@@ -29,9 +30,13 @@ const filteredUsers = computed(() => {
   })
 })
 
+const hasUsers = computed(() => users.value.length > 0)
+const hasFilteredUsers = computed(() => filteredUsers.value.length > 0)
+const isSearching = computed(() => search.value.trim().length > 0)
+
 const handleDelete = (user: User) => {
-  const comfirmed = window.confirm(`Delete user "${user.name}"?`)
-  if (!comfirmed) return
+  const confirmed = window.confirm(`Delete user "${user.name}"?`)
+  if (!confirmed) return
 
   removeUser(user.id)
 }
@@ -47,6 +52,14 @@ const getStatusClasses = (status: User['status']) => {
     ? ui.badge.statusActive
     : ui.badge.statusInactive
 }
+
+onMounted(async () => {
+  try {
+    await loadUsers()
+  } finally {
+    isLoading.value = false
+  }
+})
 
 </script>
 
@@ -77,22 +90,46 @@ const getStatusClasses = (status: User['status']) => {
   </div>
 
   <div
-    v-if="filteredUsers.length === 0" 
+    v-if="isLoading"
+    :class="ui.emptyState.base"
+  >
+    <h2 :class="ui.emptyState.title">Loading users...</h2>
+    <p :class="ui.emptyState.text">
+      Please wait while the users list is loading.
+    </p>
+  </div>
+
+  <div
+    v-else-if="!hasUsers" 
     :class="ui.emptyState.base"
     >
-    <h2 :class="ui.emptyState.title">No users found</h2>
+    <h2 :class="ui.emptyState.title">No users yet</h2>
     <p :class="ui.emptyState.text">
-      Try another search or create a new user.
+      Create your first user to get started.
     </p>
 
     <NuxtLink
       to="/admin/users/create"
       :class="ui.button.primary"
+      class="mt-2"
     >
       Create user
     </NuxtLink>
 
   </div>
+
+
+    <div
+    v-else-if="isSearching && !hasFilteredUsers" 
+    :class="ui.emptyState.base"
+    >
+    <h2 :class="ui.emptyState.title">No users found</h2>
+    <p :class="ui.emptyState.text">
+      Try another search query.
+    </p>
+
+  </div>
+
 
   <div v-else :class="ui.table.wrapper">
     <table :class="ui.table.table">

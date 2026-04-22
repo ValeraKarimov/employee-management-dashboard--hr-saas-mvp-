@@ -5,7 +5,7 @@ const shiftDb: Shift[] = [
     {
         id: 1,
         userId: 1,
-        date: '2026-04-21',
+        date: '2026-04-24',
         startTime: '09:00',
         endTime: '15:00',
         city: 'Roosendaal',
@@ -17,7 +17,7 @@ const shiftDb: Shift[] = [
     {
         id: 2,
         userId: 2,
-        date: '2026-04-21',
+        date: '2026-04-25',
         startTime: '08:00',
         endTime: '15:00',
         city: 'Roosendaal',
@@ -29,7 +29,7 @@ const shiftDb: Shift[] = [
     {
         id: 3,
         userId: 3,
-        date: '2026-04-21',
+        date: '2026-04-25',
         startTime: '06:00',
         endTime: '15:00',
         city: 'Roosendaal',

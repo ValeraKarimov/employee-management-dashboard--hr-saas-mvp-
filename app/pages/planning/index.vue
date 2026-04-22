@@ -339,7 +339,6 @@ onMounted(() => {
                     {{ submitting ? 'Approving...' : 'Approve hours' }}
                 </button>
 
-
                 <NuxtLink
                     v-if="isAdmin"
                     :to="`/admin/planning/${shift.id}/edit`"

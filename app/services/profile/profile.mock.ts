@@ -27,6 +27,10 @@ export const getMyProfileMock = async (userId: number): Promise<Profile | null> 
     return profile ?? null
 }
 
+export const getProfileMock = async (): Promise<Profile[]> => {
+    return [...profiles]
+}
+
 export const updateMyProfileMock = async (
     userId: number,
     payload: UpdateProfilePayload,

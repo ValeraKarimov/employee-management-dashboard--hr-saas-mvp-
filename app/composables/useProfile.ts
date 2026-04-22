@@ -1,9 +1,12 @@
 import { ref } from "vue";
 import type { Profile, UpdateProfilePayload } from "~/types/profile";
-import { getMyProfile, updateMyProfile } from "~/services/profile/profile.service";
+import { getMyProfile, updateMyProfile, getMyProfiles } from "~/services/profile/profile.service";
 
 export const useProfile = () => {
     const profile = ref<Profile | null>(null)
+
+    const profiles = ref<Profile[]>([])
+
     const loading = ref(false)
     const saving = ref(false)
 
@@ -16,6 +19,17 @@ export const useProfile = () => {
         } finally {
             loading.value = false
         }
+    }
+
+    const loadProfiles = async () => {
+        loading.value = true
+
+        try {
+            profiles.value = await getMyProfiles()
+        } finally {
+            loading.value = false
+        }
+
     }
 
     const updateProfile = async (
@@ -40,9 +54,11 @@ export const useProfile = () => {
 
     return {
         profile,
+        profiles,
         loading,
         saving,
         loadMyProfile,
+        loadProfiles,
         updateProfile
     }
 }

@@ -136,7 +136,7 @@ const getStatusClasses = (status: User['status']) => {
               :to="`/admin/users/${user.id}`"
               :class="ui.button.secondary"
             >
-            Edit
+            Details
           </NuxtLink>
 
           <button 

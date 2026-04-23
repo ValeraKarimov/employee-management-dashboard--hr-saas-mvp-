@@ -4,6 +4,7 @@ import { useUsers } from '~/composables/useUsers';
 import { navigateTo } from '#app';
 import { useShifts } from '~/composables/useShifts';
 import type { CreateShiftPayload } from '~/types/shifts';
+import { ui } from '~/constants/ui';
 
 definePageMeta({
     middleware: ['auth', 'role'],
@@ -145,7 +146,7 @@ onMounted(() => loadUsers())
         
         <div>
             <h1 class="text-2xl font-semibold">Create Shift</h1>
-            <p class="text-sm text-gray-500">Create a new shift for an employee</p>
+            <p :class="ui.page.description">Create a new shift for an employee</p>
         </div>
 
         <form class="rounded-lg border bg-white p-6 shadow-sm" @submit.prevent="handleSubmit">

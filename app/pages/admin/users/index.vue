@@ -65,22 +65,24 @@ onMounted(async () => {
 
 <template>
 
-<div class="space-y-6">
-  <div class="flex items-center justify-between">
+<div :class="ui.page.wrapper">
+  <div :class="ui.page.header">
     <div>
-      <h1 class="text-2xl font-bold">Users</h1>
-      <p class="text-sm text-gray-500">Manage employeers and admins</p>
+      <h1 :class="ui.page.title">Users</h1>
+      <p :class="ui.page.description">Manage employeers and admins</p>
     </div>
 
-    <NuxtLink
-      to="/admin/users/create"
-      :class="ui.button.primary"
-    >
-      Create user
-    </NuxtLink>
+      <NuxtLink
+        to="/admin/users/create"
+        :class="ui.button.primary"
+      >
+        Create user
+      </NuxtLink>
+
+
   </div>
 
-  <div class="rounded-xl border bg-white p-4 shadow-sm">
+  <div :class="ui.input.wrapper">
     <input 
       v-model="search"
       type="text" 
@@ -108,13 +110,18 @@ onMounted(async () => {
       Create your first user to get started.
     </p>
 
-    <NuxtLink
-      to="/admin/users/create"
-      :class="ui.button.primary"
-      class="mt-2"
-    >
-      Create user
-    </NuxtLink>
+
+    <div :class="ui.emptyState.actions">
+
+      <NuxtLink
+        to="/admin/users/create"
+        :class="ui.button.primary"
+      >
+        Create user
+      </NuxtLink>
+
+    </div>
+
 
   </div>
 
@@ -150,7 +157,7 @@ onMounted(async () => {
           :key="user.id"
           :class="ui.table.row"
         >
-        <td class="font-medium" :class="ui.table.td">{{ user.name }}</td>
+        <td :class="ui.table.td">{{ user.name }}</td>
         <td :class="ui.table.td">{{ user.email }}</td>
         <td :class="ui.table.td">
           <span 
@@ -168,7 +175,8 @@ onMounted(async () => {
         </td>
         <td :class="ui.table.td">{{ user.department || '-' }}</td>
         <td :class="ui.table.td">
-          <div class="flex gap-2">
+
+          <div :class="ui.actions.row">
             <NuxtLink
               :to="`/admin/users/${user.id}`"
               :class="ui.button.secondary"

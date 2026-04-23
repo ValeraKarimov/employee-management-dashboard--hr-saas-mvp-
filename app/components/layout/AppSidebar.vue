@@ -16,7 +16,7 @@ interface NavItem {
 
 const navigation: NavItem[] = [
     { label: 'Dashboard', to: '/dashboard', roles: ['admin', 'employee'], exact: true },
-    { label: 'Profile', to: '/profile', roles: ['admin', 'employee'], exact: true },
+    { label: 'Profile', to: '/profile', roles: ['employee'], exact: true },
     { label: 'Documents List', to: '/documents', roles: ['admin', 'employee'], exact: true },
     { label: 'Add Document', to: '/documents/create', roles: ['employee'], exact: true },
     { label: 'Users', to: '/admin/users', roles: ['admin'] },

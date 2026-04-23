@@ -4,6 +4,7 @@ import { useUsers } from '~/composables/useUsers';
 import { navigateTo, useRoute } from '#app';
 import { useShifts } from '~/composables/useShifts';
 import type { UpdateShiftPayload } from '~/types/shifts';
+import { ui } from '~/constants/ui';
 
 definePageMeta({
     middleware: ['auth', 'role'],
@@ -128,7 +129,7 @@ onMounted(() => {
   <div class="mx-auto max-w-3xl space-y-6">
     <div>
       <h1 class="text-2xl font-semibold">Edit Shift</h1>
-      <p class="text-sm text-gray-500">
+      <p :class="ui.page.description">
         Update shift information
       </p>
     </div>

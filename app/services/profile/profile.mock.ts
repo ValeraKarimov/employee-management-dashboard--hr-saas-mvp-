@@ -5,7 +5,7 @@ const profiles: Profile[] = [
         id: 1,
         userId: 1,
         phone: '+31 7 20637463',
-        address: 'Amsterdam, Netherlands',
+        address: 'Roosendaal, Netherlands',
         birthDate: '1995-10-12',
         position: 'Frontend Developer',
         department: 'Engineering'
@@ -14,7 +14,7 @@ const profiles: Profile[] = [
         id: 2,
         userId: 2,
         phone: '+31 7 76249561',
-        address: 'Rotterdam, Netherlands',
+        address: 'Roosendaal, Netherlands',
         birthDate: '1996-08-24',
         position: 'HR Assistant',
         department: 'Human Resources'

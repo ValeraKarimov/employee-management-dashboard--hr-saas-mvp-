@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 import { useProfile } from '~/composables/useProfile'
 import type { UpdateProfilePayload } from '~/types/profile'
+import { ui } from '~/constants/ui'
 
 definePageMeta({
   middleware: 'auth'
@@ -82,79 +83,80 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex items-center justify-between">
+  <div :class="ui.page.wrapper">
+    <div :class="ui.page.header">
       <div>
-        <h1 class="text-2xl font-bold">My Profile</h1>
-        <p class="text-sm text-gray-500">Employee personal information</p>
+        <h1 :class="ui.page.title">My Profile</h1>
+        <p :class="ui.page.description">Employee personal information</p>
       </div>
 
       <button
         v-if="profile && !isEditing"
-        class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+        :class="ui.button.primary"
         @click="startEditing"
       >
         Edit
       </button>
     </div>
 
-    <div v-if="loading" class="rounded-lg border p-4">
-      Loading profile...
+    <div v-if="loading" :class="ui.emptyState.base">
+      <h2 :class="ui.emptyState.title">Loading profile...</h2>
+      <p :class="ui.emptyState.text">Please wait while the profile is loading.</p>
     </div>
 
-    <div v-else-if="profile" class="rounded-lg border bg-white p-6 shadow-sm">
+    <div v-else-if="profile" :class="ui.card.section">
       <form v-if="isEditing" class="space-y-4" @submit.prevent="handleSubmit">
-        <div class="grid gap-4 md:grid-cols-2">
-          <div>
-            <label class="mb-1 block text-sm text-gray-500">Phone</label>
+        <div :class="ui.details.grid">
+          <div :class="ui.form.field">
+            <label :class="ui.form.label">Phone</label>
             <input
               v-model="form.phone"
               type="text"
-              class="w-full rounded-lg border px-3 py-2"
+              :class="ui.input.base"
             />
           </div>
 
-          <div>
-            <label class="mb-1 block text-sm text-gray-500">Address</label>
+          <div :class="ui.form.field">
+            <label :class="ui.form.label">Address</label>
             <input
               v-model="form.address"
               type="text"
-              class="w-full rounded-lg border px-3 py-2"
+              :class="ui.input.base"
             />
           </div>
 
-          <div>
-            <label class="mb-1 block text-sm text-gray-500">Birth date</label>
+          <div :class="ui.form.field">
+            <label :class="ui.form.label">Birth date</label>
             <input
               v-model="form.birthDate"
               type="date"
-              class="w-full rounded-lg border px-3 py-2"
+              :class="ui.input.base"
             />
           </div>
 
-          <div>
-            <label class="mb-1 block text-sm text-gray-500">Position</label>
+          <div :class="ui.form.field">
+            <label :class="ui.form.label">Position</label>
             <input
               v-model="form.position"
               type="text"
-              class="w-full rounded-lg border px-3 py-2"
+              :class="ui.input.base"
             />
           </div>
 
-          <div>
-            <label class="mb-1 block text-sm text-gray-500">Department</label>
+          <div :class="ui.form.field">
+            <label :class="ui.form.label">Department</label>
             <input
               v-model="form.department"
               type="text"
-              class="w-full rounded-lg border px-3 py-2"
+              :class="ui.input.base"
             />
           </div>
         </div>
 
-        <div class="flex gap-3">
+        <div :class="ui.form.actions">
           <button
             type="submit"
-            class="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+            :class="ui.button.primary"
             :disabled="saving"
           >
             {{ saving ? 'Saving...' : 'Save' }}
@@ -162,7 +164,7 @@ const handleSubmit = async () => {
 
           <button
             type="button"
-            class="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50"
+            :class="ui.button.secondary"
             @click="cancelEditing"
           >
             Cancel
@@ -170,36 +172,43 @@ const handleSubmit = async () => {
         </div>
       </form>
 
-      <div v-else class="grid gap-4 md:grid-cols-2">
-        <div>
-          <p class="text-sm text-gray-500">Phone</p>
-          <p class="font-medium">{{ profile.phone }}</p>
+      <div v-else :class="ui.details.grid">
+        <div class="space-y-1">
+          <p :class="ui.details.label">Phone</p>
+          <p :class="ui.details.value">{{ profile.phone }}</p>
         </div>
 
-        <div>
-          <p class="text-sm text-gray-500">Address</p>
-          <p class="font-medium">{{ profile.address }}</p>
+        <div class="space-y-1">
+          <p :class="ui.details.label">Address</p>
+          <p :class="ui.details.value">{{ profile.address }}</p>
         </div>
 
-        <div>
-          <p class="text-sm text-gray-500">Birth date</p>
-          <p class="font-medium">{{ profile.birthDate }}</p>
+        <div class="space-y-1">
+          <p :class="ui.details.label">Birth date</p>
+          <p :class="ui.details.value">{{ profile.birthDate }}</p>
         </div>
 
-        <div>
-          <p class="text-sm text-gray-500">Position</p>
-          <p class="font-medium">{{ profile.position }}</p>
+        <div class="space-y-1">
+          <p :class="ui.details.label">Position</p>
+          <p :class="ui.details.value">{{ profile.position }}</p>
         </div>
 
-        <div>
-          <p class="text-sm text-gray-500">Department</p>
-          <p class="font-medium">{{ profile.department }}</p>
+        <div class="space-y-1">
+          <p :class="ui.details.label">Department</p>
+          <p :class="ui.details.value">{{ profile.department }}</p>
         </div>
       </div>
     </div>
 
-    <div v-else class="rounded-lg border p-4 text-sm text-gray-500">
-      Profile not found
+    <div v-else :class="ui.emptyState.base">
+      <h2 :class="ui.emptyState.title">
+        Profile not found
+      </h2>
+
+      <p :class="ui.emptyState.text">
+        We could not find profile information for this user.
+      </p>
+
     </div>
   </div>
 </template>

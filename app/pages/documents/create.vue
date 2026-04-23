@@ -94,8 +94,8 @@ const handleCancel = () => {
 <template>
   <div class="max-w-2xl space-y-6">
     <div>
-      <h1 class="text-2xl font-bold">Add New Document</h1>
-      <p class="text-sm text-gray-500">
+      <h1 :class="ui.page.title">Add New Document</h1>
+      <p :class="ui.page.description">
         Upload a new employee document
       </p>
     </div>

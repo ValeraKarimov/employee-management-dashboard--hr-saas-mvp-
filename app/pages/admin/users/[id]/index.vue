@@ -84,18 +84,18 @@ const getStatusClasses = (status: User['status']) => {
 </script>
 
 <template>
-  <div v-if="user" class="space-y-6">
+  <div v-if="user" :class="ui.page.wrapper">
 
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div :class="ui.page.header">
       <div>
-        <h1 class="text-2xl font-bold">{{ user.name }}</h1>
-        <p class="text-sm text-gray-500">
+        <h1 :class="ui.page.title">{{ user.name }}</h1>
+        <p :class="ui.page.description">
           User details
         </p>
       </div>
 
-      <div class="flex gap-2">
+      <div :class="ui.actions.row">
         <NuxtLink
           to="/admin/users"
           :class="ui.button.secondary"
@@ -115,58 +115,58 @@ const getStatusClasses = (status: User['status']) => {
     <!-- Basic info -->
     <div class="grid gap-4 md:grid-cols-2">
 
-      <div class="rounded-xl border bg-white p-5 shadow-sm space-y-4">
-        <h2 class="text-lg font-semibold">Basic info</h2>
+      <div :class="ui.card.detail">
+        <h2 :class="ui.section.title">Basic info</h2>
 
         <div>
-          <p class="text-sm text-gray-500">Name</p>
-          <p class="font-medium">{{ user.name }}</p>
+          <p :class="ui.details.label">Name</p>
+          <p :class="ui.details.value">{{ user.name }}</p>
         </div>
 
         <div>
-          <p class="text-sm text-gray-500">Email</p>
-          <p class="font-medium">{{ user.email }}</p>
+          <p :class="ui.details.label">Email</p>
+          <p :class="ui.details.value">{{ user.email }}</p>
         </div>
 
         <div>
-          <p class="text-sm text-gray-500">Role</p>
+          <p :class="ui.details.label">Role</p>
           <span :class="[ui.badge.base, getRoleClasses(user.role)]">
             {{ user.role }}
           </span>
         </div>
 
         <div>
-          <p class="text-sm text-gray-500">Status</p>
+          <p :class="ui.details.label">Status</p>
           <span :class="[ui.badge.base, getStatusClasses(user.status)]">
             {{ user.status }}
           </span>
         </div>
 
         <div>
-          <p class="text-sm text-gray-500">Department</p>
-          <p class="font-medium">{{ user.department || '-' }}</p>
+          <p :class="ui.details.label">Department</p>
+          <p :class="ui.details.value">{{ user.department || '-' }}</p>
         </div>
 
         <div>
-          <p class="text-sm text-gray-500">Position</p>
-          <p class="font-medium">{{ user.position || '-' }}</p>
+          <p :class="ui.details.label">Position</p>
+          <p :class="ui.details.value">{{ user.position || '-' }}</p>
         </div>
       </div>
 
 
 
 
-      <div class="rounded-xl border bg-white p-5 shadow-sm space-y-4">
+      <div :class="ui.card.detail">
   <div class="flex items-center justify-between">
-    <h2 class="text-lg font-semibold">Leave requests</h2>
-    <span class="text-sm text-gray-500">
+    <h2 :class="ui.section.title">Leave requests</h2>
+    <span :class="ui.details.label">
       {{ userLeaves.length }} items
     </span>
   </div>
 
   <div
     v-if="userLeaves.length === 0"
-    class="text-sm text-gray-500"
+    :class="ui.details.label"
   >
     No leave requests found for this user.
   </div>
@@ -178,14 +178,14 @@ const getStatusClasses = (status: User['status']) => {
     <div
       v-for="leave in userLeaves"
       :key="leave.id"
-      class="rounded-lg border p-4"
+      :class="ui.card.nested"
     >
       <div class="flex items-center justify-between gap-4">
         <div>
-          <p class="font-medium">
+          <p :class="ui.details.value">
             {{ leave.startDate }} → {{ leave.endDate }}
           </p>
-          <p class="text-sm text-gray-500">
+          <p :class="ui.details.label">
             {{ leave.reason || 'No reason provided' }}
           </p>
         </div>
@@ -207,17 +207,17 @@ const getStatusClasses = (status: User['status']) => {
 
 
 
-<div class="rounded-xl border bg-white p-5 shadow-sm space-y-4">
+<div :class="ui.card.detail">
   <div class="flex items-center justify-between">
-    <h2 class="text-lg font-semibold">Shifts</h2>
-    <span class="text-sm text-gray-500">
+    <h2 :class="ui.section.title">Shifts</h2>
+    <span :class="ui.details.label">
       {{ userShifts.length }} items
     </span>
   </div>
 
   <div
     v-if="userShifts.length === 0"
-    class="text-sm text-gray-500"
+    :class="ui.details.label"
   >
     No shifts found for this user.
   </div>
@@ -229,11 +229,11 @@ const getStatusClasses = (status: User['status']) => {
     <div
       v-for="shift in userShifts"
       :key="shift.id"
-      class="rounded-lg border p-4"
+      :class="ui.card.nested"
     >
       <div class="flex items-start justify-between gap-4">
-        <div class="space-y-1">
-          <p class="font-medium">
+        <div :class="ui.details.item">
+          <p :class="ui.details.value">
             {{ shift.date }}
           </p>
 
@@ -241,7 +241,7 @@ const getStatusClasses = (status: User['status']) => {
             {{ shift.startTime }} → {{ shift.endTime }}
           </p>
 
-          <p class="text-sm text-gray-500">
+          <p :class="ui.details.label">
             {{ shift.city || '-' }} — {{ shift.position || '-' }}
           </p>
         </div>
@@ -266,17 +266,17 @@ const getStatusClasses = (status: User['status']) => {
 
 
 
-<div class="rounded-xl border bg-white p-5 shadow-sm space-y-4">
+<div :class="ui.card.detail">
   <div class="flex items-center justify-between">
-    <h2 class="text-lg font-semibold">Documents</h2>
-    <span class="text-sm text-gray-500">
+    <h2 :class="ui.section.title">Documents</h2>
+    <span :class="ui.details.label">
       {{ userDocuments.length }} items
     </span>
   </div>
 
   <div
     v-if="userDocuments.length === 0"
-    class="text-sm text-gray-500"
+    :class="ui.details.label"
   >
     No documents found for this user.
   </div>
@@ -288,15 +288,15 @@ const getStatusClasses = (status: User['status']) => {
     <div
       v-for="document in userDocuments"
       :key="document.id"
-      class="rounded-lg border p-4"
+      :class="ui.card.nested"
     >
       <div class="flex items-start justify-between gap-4">
-        <div class="space-y-1">
-          <p class="font-medium">
+        <div :class="ui.details.item">
+          <p :class="ui.details.value">
             {{ document.name }}
           </p>
 
-          <p class="text-sm text-gray-500">
+          <p :class="ui.details.label">
             {{ document.filename }}
           </p>
         </div>
@@ -319,14 +319,14 @@ const getStatusClasses = (status: User['status']) => {
 
 
 
-<div class="rounded-xl border bg-white p-5 shadow-sm space-y-4">
+<div :class="ui.card.detail">
   <div class="flex items-center justify-between">
-    <h2 class="text-lg font-semibold">Profile</h2>
+    <h2 :class="ui.section.title">Profile</h2>
   </div>
 
   <div
     v-if="!userProfile"
-    class="text-sm text-gray-500"
+    :class="ui.details.label"
   >
     No profile found for this user.
   </div>
@@ -336,18 +336,18 @@ const getStatusClasses = (status: User['status']) => {
     class="space-y-4"
   >
     <div>
-      <p class="text-sm text-gray-500">Phone</p>
-      <p class="font-medium">{{ userProfile.phone || '-' }}</p>
+      <p :class="ui.details.label">Phone</p>
+      <p :class="ui.details.value">{{ userProfile.phone || '-' }}</p>
     </div>
 
     <div>
-      <p class="text-sm text-gray-500">Address</p>
-      <p class="font-medium">{{ userProfile.address || '-' }}</p>
+      <p :class="ui.details.label">Address</p>
+      <p :class="ui.details.value">{{ userProfile.address || '-' }}</p>
     </div>
 
     <div>
-      <p class="text-sm text-gray-500">Birth date</p>
-      <p class="font-medium">{{ userProfile.birthDate || '-' }}</p>
+      <p :class="ui.details.label">Birth date</p>
+      <p :class="ui.details.value">{{ userProfile.birthDate || '-' }}</p>
     </div>
   </div>
 </div>
@@ -360,7 +360,8 @@ const getStatusClasses = (status: User['status']) => {
   </div>
 
   <!-- loading -->
-  <div v-else class="text-sm text-gray-500">
-    Loading...
+  <div v-else :class="ui.emptyState.base">
+    <h2 :class="ui.emptyState.title">Loading user details...</h2>
+    <p :class="ui.emptyState.text">Please wait while the user data is loading...</p>
   </div>
 </template>

@@ -61,10 +61,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="space-y-8">
+  <div :class="ui.page.wrapper">
     <section class="space-y-2">
       <h2 :class="ui.emptyState.title">Overview</h2>
-      <p class="text-sm text-gray-500">
+      <p :class="ui.emptyState.text">
         A quick summary of your HR workspace.
       </p>
     </section>
@@ -72,42 +72,42 @@ onMounted(async () => {
     <template v-if="isAdmin">
       <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div :class="ui.card.stat">
-          <p class="text-sm text-gray-500">Total users</p>
-          <p class="mt-2 text-3xl font-bold">{{ totalUsers }}</p>
+          <p :class="ui.card.statLabel">Total users</p>
+          <p :class="ui.card.statValue">{{ totalUsers }}</p>
         </div>
 
         <div :class="ui.card.stat">
-          <p class="text-sm text-gray-500">Admins</p>
-          <p class="mt-2 text-3xl font-bold">{{ totalAdmins }}</p>
+          <p :class="ui.card.statLabel">Admins</p>
+          <p :class="ui.card.statValue">{{ totalAdmins }}</p>
         </div>
 
         <div :class="ui.card.stat">
-          <p class="text-sm text-gray-500">Employees</p>
-          <p class="mt-2 text-3xl font-bold">{{ totalEmployees }}</p>
+          <p :class="ui.card.statLabel">Employees</p>
+          <p :class="ui.card.statValue">{{ totalEmployees }}</p>
         </div>
 
         <div :class="ui.card.stat">
-          <p class="text-sm text-gray-500">Pending leave requests</p>
-          <p class="mt-2 text-3xl font-bold">{{ pendingLeaveRequests }}</p>
+          <p :class="ui.card.statLabel">Pending leave requests</p>
+          <p :class="ui.card.statValue">{{ pendingLeaveRequests }}</p>
         </div>
       </section>
 
       <section class="space-y-4">
         <div>
           <h2 :class="ui.emptyState.title">Quick Actions</h2>
-          <p class="text-sm text-gray-500">
+          <p :class="ui.page.description">
             Jump directly to the main admin workflows.
           </p>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
           <div :class="ui.card.section">
-            <h3 class="text-base font-semibold">Users management</h3>
+            <h3 :class="ui.emptyState.title">Users management</h3>
             <p :class="ui.emptyState.text">
               Create, edit and manage employee and admin accounts.
             </p>
 
-            <div class="mt-4">
+            <div :class="ui.card.actions">
               <NuxtLink
                 to="/admin/users"
                 :class="ui.button.primary"
@@ -118,12 +118,12 @@ onMounted(async () => {
           </div>
 
           <div :class="ui.card.section">
-            <h3 class="text-base font-semibold">Leave requests</h3>
+            <h3 :class="ui.emptyState.title">Leave requests</h3>
             <p :class="ui.emptyState.text">
               Review and update employee leave request statuses.
             </p>
 
-            <div class="mt-4">
+            <div :class="ui.card.actions">
               <NuxtLink
                 to="/admin/leave"
                 :class="ui.button.primary"
@@ -139,37 +139,37 @@ onMounted(async () => {
     <template v-else-if="isEmployee">
       <section class="grid gap-4 md:grid-cols-3">
         <div :class="ui.card.stat">
-          <p class="text-sm text-gray-500">My leave requests</p>
-          <p class="mt-2 text-3xl font-bold">{{ myLeaveRequests.length }}</p>
+          <p :class="ui.card.statLabel">My leave requests</p>
+          <p :class="ui.card.statValue">{{ myLeaveRequests.length }}</p>
         </div>
 
         <div :class="ui.card.stat">
-          <p class="text-sm text-gray-500">Pending requests</p>
-          <p class="mt-2 text-3xl font-bold">{{ myPendingLeaveRequests }}</p>
+          <p :class="ui.card.statLabel">Pending requests</p>
+          <p :class="ui.card.statValue">{{ myPendingLeaveRequests }}</p>
         </div>
 
         <div :class="ui.card.stat">
-          <p class="text-sm text-gray-500">Approved requests</p>
-          <p class="mt-2 text-3xl font-bold">{{ myApprovedLeaveRequests }}</p>
+          <p :class="ui.card.statLabel">Approved requests</p>
+          <p :class="ui.card.statValue">{{ myApprovedLeaveRequests }}</p>
         </div>
       </section>
 
       <section class="space-y-4">
         <div>
-          <h2 class="text-lg font-semibold">Quick Actions</h2>
-          <p class="text-sm text-gray-500">
+          <h2 :class="ui.emptyState.title">Quick Actions</h2>
+          <p :class="ui.card.statLabel">
             Use the main leave management actions.
           </p>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
           <div :class="ui.card.section">
-            <h3 class="text-base font-semibold">My leave requests</h3>
+            <h3 :class="ui.emptyState.title">My leave requests</h3>
             <p :class="ui.emptyState.text">
               View all your leave requests and check their statuses.
             </p>
 
-            <div class="mt-4">
+            <div :class="ui.card.actions">
               <NuxtLink
                 to="/leave"
                 :class="ui.button.primary"
@@ -180,12 +180,12 @@ onMounted(async () => {
           </div>
 
           <div :class="ui.card.section">
-            <h3 class="text-base font-semibold">Create leave request</h3>
+            <h3 :class="ui.emptyState.title">Create leave request</h3>
             <p :class="ui.emptyState.text">
               Submit a new leave request for approval.
             </p>
 
-            <div class="mt-4">
+            <div :class="ui.card.actions">
               <NuxtLink
                 to="/leave/create"
                 :class="ui.button.primary"

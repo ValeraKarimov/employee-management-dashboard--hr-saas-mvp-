@@ -109,11 +109,11 @@ const reloadDocuments = async () => {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex items-start justify-between">
+  <div :class="ui.page.wrapper">
+    <div :class="ui.page.header">
       <div>
-        <h1 class="text-2xl font-bold">Documents</h1>
-        <p class="text-sm text-gray-500">
+        <h1 :class="ui.page.title">Documents</h1>
+        <p :class="ui.page.description">
           {{ isAdmin ? 'All employee documents' : 'My documents' }}
         </p>
       </div>
@@ -121,81 +121,82 @@ const reloadDocuments = async () => {
       <NuxtLink
         v-if="canCreateDocument"
         to="/documents/create"
-        class="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+        :class="ui.button.primary"
       >
         Add new document
       </NuxtLink>
     </div>
 
-    <div v-if="loading" class="rounded-lg border p-4">
-      Loading documents...
+    <div v-if="loading" :class="ui.emptyState.base">
+      <h2 :class="ui.emptyState.title">Loading documents...</h2>
+      <p :class="ui.emptyState.text">Please wait while the documents list is loading.</p>
     </div>
 
-    <div v-else-if="documents.length" class="overflow-hidden rounded-lg border bg-white shadow-sm">
-      <table class="min-w-full divide-y">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold">File Name</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold">Type</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold">Uploaded At</th>
+    <div v-else-if="documents.length" :class="ui.table.wrapper">
+      <table :class="ui.table.table">
+        <thead :class="ui.table.thead">
+          <tr :class="ui.table.row">
+            <th :class="ui.table.th">Name</th>
+            <th :class="ui.table.th">File Name</th>
+            <th :class="ui.table.th">Type</th>
+            <th :class="ui.table.th">Status</th>
+            <th :class="ui.table.th">Uploaded At</th>
             <th
               v-if="canEditDocument || canDeleteDocument"
-              class="px-4 py-3 text-left text-sm font-semibold"
+              :class="ui.table.th"
             >
               Actions
             </th>
           </tr>
         </thead>
 
-        <tbody class="divide-y">
-          <tr v-for="document in documents" :key="document.id">
+        <tbody>
+          <tr v-for="document in documents" :key="document.id" :class="ui.table.row">
             <template v-if="editingDocumentId === document.id">
-              <td class="px-4 py-3 text-sm">
+              <td :class="ui.table.td">
                 <input
                   v-model="editForm.name"
                   type="text"
-                  class="w-full rounded-lg border px-3 py-2"
+                  :class="ui.input.base"
                 />
               </td>
 
-              <td class="px-4 py-3 text-sm">
+              <td :class="ui.table.td">
                 <input
                   v-model="editForm.filename"
                   type="text"
-                  class="w-full rounded-lg border px-3 py-2"
+                  :class="ui.input.base"
                 />
               </td>
 
-              <td class="px-4 py-3 text-sm">
+              <td :class="ui.table.td">
                 <input
                   v-model="editForm.type"
                   type="text"
-                  class="w-full rounded-lg border px-3 py-2"
+                  :class="ui.input.base"
                 />
               </td>
 
-              <td class="px-4 py-3 text-sm">
+              <td :class="ui.table.td">
                 <select
                   v-model="editForm.status"
-                  class="w-full rounded-lg border px-3 py-2"
+                  :class="ui.input.base"
                 >
                   <option value="active">active</option>
                   <option value="archived">archived</option>
                 </select>
               </td>
 
-              <td class="px-4 py-3 text-sm">{{ document.uploadedAt }}</td>
+              <td :class="ui.table.td">{{ document.uploadedAt }}</td>
 
               <td
                 v-if="canEditDocument || canDeleteDocument"
-                class="px-4 py-3 text-sm"
+                :class="ui.table.td"
               >
-                <div class="flex gap-2">
+                <div :class="ui.actions.row">
                   <button
                     v-if="canEditDocument"
-                    class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50 disabled:opacity-50"
+                    :class="ui.button.secondary"
                     :disabled="updating || !editForm.name || !editForm.type"
                     @click="handleUpdate(document.id)"
                   >
@@ -204,7 +205,7 @@ const reloadDocuments = async () => {
 
                   <button
                     v-if="canDeleteDocument"
-                    class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50"
+                    :class="ui.button.secondary"
                     @click="cancelEditing"
                   >
                     Cancel
@@ -214,28 +215,30 @@ const reloadDocuments = async () => {
             </template>
 
             <template v-else>
-              <td class="px-4 py-3 text-sm">{{ document.name }}</td>
-              <td class="px-4 py-3 text-sm">{{ document.filename }}</td>
-              <td class="px-4 py-3 text-sm">{{ document.type }}</td>
-              <td class="px-4 py-3 text-sm">
+              <td :class="ui.table.td">{{ document.name }}</td>
+              <td :class="ui.table.td">{{ document.filename }}</td>
+              <td :class="ui.table.td">{{ document.type }}</td>
+              <td :class="ui.table.td">
                 <span
-                  class="rounded-full border px-2 py-1 text-xs"
-                  :class="document.status === 'active'
-                    ? ui.badge.statusActive
-                    : ui.badge.statusInactive"
+                  :class="[
+                    ui.badge.base, 
+                    document.status === 'active'
+                      ? ui.badge.statusActive
+                      : ui.badge.statusInactive
+                  ]"
                 >
                   {{ document.status }}
                 </span>
               </td>
-              <td class="px-4 py-3 text-sm">{{ document.uploadedAt }}</td>
+              <td :class="ui.table.td">{{ document.uploadedAt }}</td>
               <td
                 v-if="canEditDocument || canDeleteDocument"
-                class="px-4 py-3 text-sm"
+                :class="ui.table.td"
               >
-                <div class="flex gap-2">
+                <div :class="ui.actions.row">
                   <button
                     v-if="canEditDocument"
-                    class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50"
+                    :class="ui.button.secondary"
                     @click="startEditing(document)"
                   >
                     Edit
@@ -243,7 +246,8 @@ const reloadDocuments = async () => {
 
                   <button
                     v-if="canDeleteDocument"
-                    class="rounded-lg border px-3 py-1 text-xs hover:bg-gray-50 disabled:opacity-50"
+
+                    :class="ui.button.danger"
                     :disabled="deleting"
                     @click="handleDelete(document.id)"
                   >
@@ -257,7 +261,7 @@ const reloadDocuments = async () => {
       </table>
     </div>
 
-    <div v-else class="rounded-lg border p-4 text-sm text-gray-500">
+    <div v-else :class="ui.emptyState.base">
       No documents found
     </div>
   </div>

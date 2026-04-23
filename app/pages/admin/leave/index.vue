@@ -54,18 +54,18 @@ const leaveRows = computed<LeaveTableRow[]>(() => {
 </script>
 
 <template>
-    <div class="space-y-6">
+    <div :class="ui.page.wrapper">
         
-        <div class="flex items-center justify-between">
+        <div :class="ui.page.header">
             <div>
-                <h1 class="text-2xl font-bold">LeaveRequests</h1>
-                <p class="text-sm text-gray-500">
+                <h1 :class="ui.page.title">LeaveRequests</h1>
+                <p :class="ui.page.description">
                     Review and manage employee leave requests
                 </p>
             </div>
         </div>
 
-        <div class="rounded-xl border bg-white p-4 shadow-sm">
+        <div :class="ui.input.wrapper">
             <div class="flex items-center gap-3">
                 <label class="text-sm font-medium">Filter by status:</label>
 
@@ -108,7 +108,7 @@ const leaveRows = computed<LeaveTableRow[]>(() => {
                     <tr 
                         v-for="request in leaveRows"
                         :key="request.id"
-                        class="border-t"
+                        :class="ui.table.row"
                     >
                     <td :class="ui.table.td">{{ request.userName }}</td>
                     <td :class="ui.table.td">{{ request.startDate }}</td>
@@ -122,9 +122,9 @@ const leaveRows = computed<LeaveTableRow[]>(() => {
                         </span>
                     </td>
                     <td :class="ui.table.td">
-                        <div class="flex gap-2">
+                        <div :class="ui.actions.row">
                             <button 
-                                class="rounded-md border px-3 py-1 text-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                :class="ui.button.secondary"
                                 :disabled="request.status !== 'pending'"
                                 @click="handleApprove(request)"
                             >
@@ -132,7 +132,7 @@ const leaveRows = computed<LeaveTableRow[]>(() => {
                             </button>
 
                             <button 
-                                class="rounded-md border px-3 py-1 text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                :class="ui.button.danger"
                                 :disabled="request.status !== 'pending'"
                                 @click="handleReject(request)"
                             >

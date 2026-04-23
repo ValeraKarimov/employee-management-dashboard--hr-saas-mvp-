@@ -77,19 +77,19 @@ const handleCancel = () => {
 </script>
 
 <template>
-    <div class="max-w-2xl space-y-6">
+    <div :class="ui.page.narrow">
         
         <div>
-            <h1 class="text-2xl font-bold">Create Leave Request</h1>
-            <p class="text-sm text-gray-500">
-                Submit a newleave request
+            <h1 :class="ui.page.title">Create Leave Request</h1>
+            <p :class="ui.page.description">
+                Submit a new leave request
             </p>
         </div>
 
         <form class="space-y-4 rounded-xl border bg-white p-6 shadow-sm" @submit.prevent="handleSubmit">
          
-            <div>
-                <label class="mb-1 block text-sm font-medium">Start Date</label>
+            <div :class="ui.form.field">
+                <label :class="ui.form.label">Start Date</label>
                 <input 
                     v-model="form.startDate"
                     type="date"
@@ -97,14 +97,14 @@ const handleCancel = () => {
                 />
                 <p
                     v-if="errors.startDate"
-                    class="mt-1 text-sm text-red-600"
+                    :class="ui.form.error"
                 >
                     {{ errors.startDate }}
                 </p>
             </div>
 
-            <div>
-                <label class="mb-1 block text-sm font-medium">End Date</label>
+            <div :class="ui.form.field">
+                <label :class="ui.form.label">End Date</label>
                 <input 
                     v-model="form.endDate"
                     type="date"
@@ -118,8 +118,8 @@ const handleCancel = () => {
                 </p>
             </div>
 
-            <div>
-                <label class="mb-1 block text-sm font-medium">Reason</label>
+            <div :class="ui.form.field">
+                <label :class="ui.form.label">Reason</label>
                 <textarea 
                     v-model="form.reason"
                     rows="4"
@@ -134,17 +134,17 @@ const handleCancel = () => {
                 </p>
             </div>
 
-            <div class="flex gap-3 pt-2">
+            <div :class="ui.form.actions">
                 <button 
                     type="submit"
-                    class="rounded-lg bg-black px-4 py-2 text-white"
+                    :class="ui.button.primary"
                 >
                     Submit request
                 </button>
 
                 <button 
                     type="button"
-                    class="rounded-lg border px-4 py-2"
+                    :class="ui.button.secondary"
                     @click="handleCancel"
                 >
                     Cancel

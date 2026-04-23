@@ -4,6 +4,7 @@ import { useShifts } from '~/composables/useShifts'
 import { useAuthStore } from '~/stores/auth'
 import { useUsers } from '~/composables/useUsers'
 import type { Shift, ScheduleStatus } from '~/types/shifts'
+import { ui } from '~/constants/ui'
 
 definePageMeta({
   middleware: ['auth']
@@ -182,11 +183,11 @@ onMounted(() => {
 </script>
 
 <template>
-<div class="space-y-6">
+<div :class="ui.page.wrapper">
  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
   <div>
-    <h1 class="text-2xl font-semibold">Planning Overview</h1>
-    <p class="text-sm text-gray-500">
+    <h1 :class="ui.page.title">Planning Overview</h1>
+    <p :class="ui.page.description">
       {{ formatWeekRange(currentWeekDate) }}
     </p>
   </div>
@@ -299,7 +300,7 @@ onMounted(() => {
                     Employee: {{ getEmployeeName(shift.userId) }}
                   </p>
 
-                <p class="text-sm text-gray-500">
+                <p :class="ui.page.description">
                   {{ shift.city }} · {{ shift.position }}
                 </p>
               </div>

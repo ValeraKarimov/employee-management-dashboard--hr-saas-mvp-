@@ -3,6 +3,7 @@ import { navigateTo } from '#app';
 import UserForm from '~/components/users/UserForm.vue';
 import { useUsers } from '~/composables/useUsers';
 import type { User } from '~/types/user';
+import { ui } from '~/constants/ui';
 
 definePageMeta({
   middleware: ['auth', 'role'],
@@ -24,10 +25,10 @@ const handleCancel = () => {
 
 
 <template>
-  <div class="max-w-2xl space-y-6">
+  <div :class="ui.page.narrow">
     <div>
-      <h1 class="text-2xl font-bold">Create User</h1>
-      <p class="text-sm text-gray-500">Add a new employee or admin</p>
+      <h1 :class="ui.page.title">Create User</h1>
+      <p :class="ui.page.description">Add a new employee or admin</p>
     </div>
 
   <UserForm

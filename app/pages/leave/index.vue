@@ -39,11 +39,11 @@ const getStatusClasses = (status: LeaveStatus) => {
 </script>
 
 <template>
-    <div class="space-y6">
-        <div class="flex items-center justify-between">
+    <div :class="ui.page.wrapper">
+        <div :class="ui.page.header">
             <div>
-                <h1 class="text-2xl font-bold">My Leave Requests</h1>
-                <p class="text-sm text-gray-500">
+                <h1 :class="ui.page.title">My Leave Requests</h1>
+                <p :class="ui.page.description">
                     Review and manage employee leave requests
                 </p>
             </div>
@@ -60,8 +60,8 @@ const getStatusClasses = (status: LeaveStatus) => {
             v-if="myLeaveRequests.length === 0" 
             :class="ui.emptyState.base"
         >
-        <h2 class="text-lg font-semibold">No leave requests yet</h2>
-        <p class="mt-2 text-sm text-gray-500">You are not submitted any leave requests.</p>
+        <h2 :class="ui.emptyState.title">No leave requests yet</h2>
+        <p :class="ui.emptyState.text">You are not submitted any leave requests.</p>
 
         <NuxtLink
             to="/leave/create"
@@ -87,7 +87,7 @@ const getStatusClasses = (status: LeaveStatus) => {
                     <tr 
                         v-for="request in myLeaveRequests"
                         :key="request.id"
-                        class="border-t"
+                        :class="ui.table.row"
                     >
                         <td :class="ui.table.td">{{ request.startDate }}</td>
                         <td :class="ui.table.td">{{ request.endDate }}</td>

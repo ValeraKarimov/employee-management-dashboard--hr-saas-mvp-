@@ -8,10 +8,16 @@ export const ui = {
     card: {
         base: 'rounded-xl border bg-white shadow-sm',
         section: 'rounded-xl border bg-white p-6 shadow-sm',
-        stat: 'rounded-xl border bg-white p-5 shadow-sm'
+        stat: 'rounded-xl border bg-white p-5 shadow-sm',
+        statLabel: 'text-sm text-gray-500',
+        statValue: 'mt-2 text-3xl font-bold',
+        actions: 'mt-4',
+        detail: 'rounded-xl border bg-white p-5 shadow-sm space-y-4',
+        nested: 'rounded-lg border p-4'
     },
 
     input: {
+        wrapper: 'rounded-xl border bg-white p-4 shadow-sm',
         base: 'w-full rounded-lg border px-3 py-2 outline-none'
     },
 
@@ -29,7 +35,8 @@ export const ui = {
     emptyState: {
         base: 'rounded-xl border bg-white p-10 text-center shadow-sm',
         title: 'text-lg font-semibold',
-        text: 'mt-2 text-sm text-gray-500'
+        text: 'mt-2 text-sm text-gray-500',
+        actions: 'mt-4 flex justify-center'
     },
 
     table: {
@@ -39,5 +46,32 @@ export const ui = {
         th: 'px-4 py-3',
         td: 'px-4 py-3',
         row: 'border-t'
+    },
+    page: {
+        wrapper: 'space-y-6',
+        header: 'flex items-start justify-between',
+        title: 'text-2xl font-bold',
+        description: 'text-sm text-gray-500',
+        narrow: 'max-w-2xl space-y-6'
+    },
+    section: {
+        title: 'text-lg font-semibold',
+        description: 'mt-1 text-sm text-gray-500',
+    },
+    actions: {
+        row: 'flex items-center gap-2',
+        end: 'flex items-center justify-end gap-2'
+    },
+    form: {
+        field: 'space-y-1',
+        label: 'block text-sm font-medium',
+        error: 'mt-1 text-sm text-red-600',
+        actions: 'flex gap-3 pt-2'
+    },
+    details: {
+        grid: 'grid gap-4 md:grid-cols-2',
+        item: 'space-y-1',
+        label: 'text-sm text-gray-500',
+        value: 'font-medium'
     }
 }

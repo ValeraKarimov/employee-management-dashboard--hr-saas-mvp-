@@ -62,11 +62,9 @@ onMounted(async () => {
 
 <template>
   <div :class="ui.page.wrapper">
-    <section class="space-y-2">
-      <h2 :class="ui.emptyState.title">Overview</h2>
-      <p :class="ui.emptyState.text">
-        A quick summary of your HR workspace.
-      </p>
+    <section>
+      <h1 :class="ui.page.title">Overview</h1>
+      <p :class="ui.page.description">A quick summary of your HR workspace.</p>
     </section>
 
     <template v-if="isAdmin">

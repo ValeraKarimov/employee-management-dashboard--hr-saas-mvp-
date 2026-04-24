@@ -2,7 +2,7 @@
 
 Employee Management System (HRM) SaaS training project for portfolio.
 
-## Stack
+## Tech Stack
 
 ### Frontend
 - Nuxt 4
@@ -15,14 +15,27 @@ Employee Management System (HRM) SaaS training project for portfolio.
 
 ## Project goal
 
-The goal of the project is to create a clear MVP of the HRM system for study:
+The goal of the project is to build a clear and understandable MVP of an HRM system for learning purposes:
 - role-based UI
-- auth flow
+- authentication flow
 - users management
 - leave requests
+- planning / shifts
 - gradual transition from mock data to API
 
 This is an **MVP**, not a production solution.
+
+---
+
+## Getting started
+
+```bash
+npm install
+npm run dev
+```
+
+App will be available at:
+http://localhost:3000
 
 ---
 
@@ -45,12 +58,36 @@ This is an **MVP**, not a production solution.
 - delete user
 - view all leave requests
 - approve / reject leave requests
+- user details page
+- view related user data:
+  - profile
+  - documents
+  - leave requests
+  - shifts
 
 ### UI
 - role-based sidebar
 - role-based dashboard
-- shared UI constants
+- shared UI system (buttons, tables, forms, empty states)
 - badges for roles and statuses
+- loading / empty states
+- polished MVP layout
+
+### Documents
+- view documents
+- employees can create documents
+- admins can edit / delete documents
+
+### Planning / Shifts
+- weekly planning overview
+- create / edit / delete shifts as admin
+- employee can confirm shifts
+- admin can approve hours
+- filters by status and search
+
+### Profile
+- employee profile page
+- edit personal information
 
 ---
 
@@ -59,6 +96,7 @@ This is an **MVP**, not a production solution.
 ```bash
 ├─ components/
 ├─ composables/
+├─ config/
 ├─ constants/
 ├─ layouts/
 ├─ middleware/

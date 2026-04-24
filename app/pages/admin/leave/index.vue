@@ -7,6 +7,7 @@ import type { LeaveTableRow } from '~/types/leaves';
 import { users } from '~/services/users/users.mock';
 
 definePageMeta({
+   
     middleware: ['auth', 'role'],
     role: 'admin'
 })
@@ -58,7 +59,7 @@ const leaveRows = computed<LeaveTableRow[]>(() => {
         
         <div :class="ui.page.header">
             <div>
-                <h1 :class="ui.page.title">LeaveRequests</h1>
+                <h1 :class="ui.page.title">Leave Requests</h1>
                 <p :class="ui.page.description">
                     Review and manage employee leave requests
                 </p>

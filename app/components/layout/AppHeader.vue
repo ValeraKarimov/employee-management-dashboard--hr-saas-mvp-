@@ -13,6 +13,10 @@ const pageTitle = computed(() => {
     switch (route.path) {
         case '/dashboard':
             return 'Dashboard'
+        case '/documents':
+            return 'Documnents List'
+        case '/documents/create':
+            return 'Add Document'
         case '/leave':
             return 'My Leave'
         case '/leave/create':
@@ -21,9 +25,17 @@ const pageTitle = computed(() => {
             return 'Users'
         case '/admin/leave':
             return 'Leave Requests'
+        case '/planning':
+            return 'Planning List'
+        case '/admin/planning/create':
+            return 'Add to Planning'
+        case '/profile':
+            return 'Profile'
         default: 
             if (route.path.startsWith('/admin/users')) {
-                return 'Edit User'
+                return 'Users'
+            } else if (route.path.startsWith('/admin/planning')) {
+                return 'Planning List'
             }
 
             return 'HRM System'

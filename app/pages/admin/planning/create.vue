@@ -145,7 +145,7 @@ onMounted(() => loadUsers())
     <div class="mx-auto max-w-3xl space-y-6">
         
         <div>
-            <h1 class="text-2xl font-semibold">Create Shift</h1>
+            <h1 class="text-2xl font-semibold">Create New Shift</h1>
             <p :class="ui.page.description">Create a new shift for an employee</p>
         </div>
 

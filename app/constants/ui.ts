@@ -1,8 +1,8 @@
 export const ui = {
     button: {
-        primary: 'inline-flex rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:opacity-90',
-        secondary: 'inline-flex rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-100 border',
-        danger: 'inline-flex rounded-lg px-4 py-2 text-sm font-medium text-red-600 hover:bg-gray-100 border'
+        primary: 'inline-flex rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed',
+        secondary: 'inline-flex rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-100 border disabled:opacity-50 disabled:cursor-not-allowed',
+        danger: 'inline-flex rounded-lg px-4 py-2 text-sm font-medium text-red-600 hover:bg-gray-100 border disabled:opacity-50 disabled:cursor-not-allowed'
     },
 
     card: {

@@ -7,6 +7,7 @@ import type { DocumentItem, UpdateDocumentPayload } from '~/types/document'
 import { ui } from '~/constants/ui'
 
 definePageMeta({
+  layout: 'default',
   middleware: 'auth'
 })
 
